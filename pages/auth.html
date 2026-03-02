@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PlanUp — Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f1f5f9;font-size:14px}
+.card{background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,.08);padding:32px;width:100%;max-width:400px;margin:16px}
+.logo{display:flex;align-items:center;gap:8px;margin-bottom:24px}
+.logo-ic{width:32px;height:32px;background:#6366f1;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+.logo-nm{font-size:18px;font-weight:700;letter-spacing:-.3px}
+.tabs{display:flex;background:#f1f5f9;border-radius:10px;padding:4px;gap:4px;margin-bottom:24px}
+.tab{flex:1;height:34px;border:none;border-radius:8px;font-family:inherit;font-size:13px;font-weight:500;color:#6b7280;background:transparent;cursor:pointer;transition:all .15s}
+.tab.on{background:#fff;color:#111827;box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.fg{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+label{font-size:12px;font-weight:500;color:#6b7280}
+input{height:38px;padding:0 12px;border:1px solid #e5e7eb;border-radius:8px;font-family:inherit;font-size:13px;outline:none;transition:all .15s;width:100%}
+input:focus{border-color:#6366f1;box-shadow:0 0 0 3px #eef2ff}
+
+@media(max-width:480px){
+  body{align-items:flex-start;padding-top:32px}
+  .card{border-radius:16px;padding:24px 20px;margin:12px}
+  .tabs{margin-bottom:20px}
+}
+.pw-wrap{position:relative}
+.pw-wrap input{padding-right:40px}
+.eye{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#9ca3af;font-size:16px;padding:2px}
+.eye:hover{color:#374151}
+.submit{width:100%;height:40px;background:#6366f1;color:#fff;border:none;border-radius:8px;font-family:inherit;font-size:14px;font-weight:600;cursor:pointer;margin-top:4px;transition:filter .15s}
+.submit:hover{filter:brightness(1.1)}
+.submit:disabled{opacity:.6;cursor:not-allowed}
+.divider{display:flex;align-items:center;gap:10px;margin:18px 0;color:#9ca3af;font-size:12px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:#e5e7eb}
+.google-btn{width:100%;height:40px;background:#fff;border:1px solid #e5e7eb;border-radius:8px;display:flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;font-size:13px;font-weight:500;cursor:pointer;transition:background .15s}
+.google-btn:hover{background:#f9fafb}
+.err{padding:10px 12px;background:#fef2f2;border:1px solid #fecaca;border-radius:8px;font-size:12px;color:#dc2626;display:none;margin-bottom:12px}
+.err.on{display:block}
+.ok-msg{padding:10px 12px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;font-size:12px;color:#16a34a;display:none;margin-bottom:12px}
+.ok-msg.on{display:block}
+.forgot{font-size:12px;color:#6366f1;cursor:pointer;text-align:right;margin-top:-4px;margin-bottom:8px}
+.forgot:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">
+    <div class="logo-ic">P</div>
+    <span class="logo-nm">PlanUp</span>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" id="tab-in"  onclick="switchTab('in')">Sign in</button>
+    <button class="tab"    id="tab-up"  onclick="switchTab('up')">Create account</button>
+  </div>
+
+  <div class="err" id="err-box"></div>
+  <div class="ok-msg" id="ok-box"></div>
+
+  <div class="fg" id="name-fg" style="display:none">
+    <label>Full name</label>
+    <input id="f-name" type="text" placeholder="Your name" autocomplete="name"/>
+  </div>
+  <div class="fg">
+    <label>Email address</label>
+    <input id="f-email" type="email" placeholder="you@example.com" autocomplete="email"/>
+  </div>
+  <div class="fg">
+    <label>Password</label>
+    <div class="pw-wrap">
+      <input id="f-pass" type="password" placeholder="••••••••" autocomplete="current-password"/>
+      <button class="eye" onclick="toggleEye()" id="eye-btn" type="button">👁</button>
+    </div>
+  </div>
+  <div class="forgot" id="forgot-link" onclick="forgotPw()">Forgot password?</div>
+
+  <button class="submit" id="submit-btn" onclick="doSubmit()">Sign in</button>
+
+  <div class="divider">or</div>
+
+  <button class="google-btn" onclick="doGoogle()">
+    <svg width="18" height="18" viewBox="0 0 24 24">
+      <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+      <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+      <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/>
+      <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+    </svg>
+    Continue with Google
+  </button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+// ── CONFIG ── same in both files ─────────────────────────────
+const SUPA_URL = 'https://ilsbnkwcqxiijiyrljfi.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlsc2Jua3djcXhpaWppeXJsamZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MDQzMTcsImV4cCI6MjA4Nzk4MDMxN30.trrsgMaSG7hgq-rpzcUJyqffR8AjOvyfdaSEoeRj_a4';
+// ─────────────────────────────────────────────────────────────
+
+// Create client with explicit localStorage persistence
+const sb = supabase.createClient(SUPA_URL, SUPA_KEY, {
+  auth: {
+    storage: window.localStorage,
+    storageKey: 'planup-auth',
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true,
+  }
+});
+
+let mode = 'in';
+
+// Check if already logged in
+sb.auth.getSession().then(({ data: { session } }) => {
+  if (session) goApp();
+});
+
+function switchTab(m) {
+  mode = m;
+  document.getElementById('tab-in').classList.toggle('on', m==='in');
+  document.getElementById('tab-up').classList.toggle('on', m==='up');
+  document.getElementById('name-fg').style.display = m==='up' ? '' : 'none';
+  document.getElementById('forgot-link').style.display = m==='in' ? '' : 'none';
+  document.getElementById('submit-btn').textContent = m==='in' ? 'Sign in' : 'Create account';
+  document.getElementById('f-pass').autocomplete = m==='in' ? 'current-password' : 'new-password';
+  hideErr(); hideOk();
+}
+
+function toggleEye() {
+  const inp = document.getElementById('f-pass');
+  const btn = document.getElementById('eye-btn');
+  inp.type = inp.type==='password' ? 'text' : 'password';
+  btn.textContent = inp.type==='password' ? '👁' : '🙈';
+}
+
+async function doSubmit() {
+  hideErr(); hideOk();
+  const email = document.getElementById('f-email').value.trim();
+  const pass  = document.getElementById('f-pass').value;
+  const name  = document.getElementById('f-name').value.trim();
+
+  if (!email) return showErr('Enter your email');
+  if (!pass)  return showErr('Enter your password');
+  if (pass.length < 6) return showErr('Password must be at least 6 characters');
+  if (mode==='up' && !name) return showErr('Enter your full name');
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = mode==='in' ? 'Signing in…' : 'Creating account…';
+
+  if (mode==='up') {
+    const { error } = await sb.auth.signUp({
+      email, password: pass,
+      options: { data: { full_name: name } }
+    });
+    btn.disabled = false; btn.textContent = 'Create account';
+    if (error) return showErr(error.message);
+    showOk('Account created! Check your email to confirm, then sign in.');
+    switchTab('in');
+  } else {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: pass });
+    btn.disabled = false; btn.textContent = 'Sign in';
+    if (error) return showErr(error.message);
+    console.log('Signed in:', data.user.id);
+    goApp();
+  }
+}
+
+async function doGoogle() {
+  const { error } = await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: location.origin + '/pages/app.html' }
+  });
+  if (error) showErr(error.message);
+}
+
+async function forgotPw() {
+  const email = document.getElementById('f-email').value.trim();
+  if (!email) { showErr('Enter your email first'); return; }
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: location.origin + '/pages/auth.html'
+  });
+  if (error) showErr(error.message);
+  else showOk('Password reset email sent! Check your inbox.');
+}
+
+function goApp() { location.href = location.origin + '/pages/app.html'; }
+function showErr(m) { const e=document.getElementById('err-box'); e.textContent=m; e.classList.add('on'); }
+function hideErr()  { document.getElementById('err-box').classList.remove('on'); }
+function showOk(m)  { const e=document.getElementById('ok-box');  e.textContent=m; e.classList.add('on'); }
+function hideOk()   { document.getElementById('ok-box').classList.remove('on'); }
+</script>
+</body>
+</html>

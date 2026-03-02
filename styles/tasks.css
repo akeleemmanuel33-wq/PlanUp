@@ -1,0 +1,305 @@
+/* ============================================================
+   styles/tasks.css — Task cards, priority, status, drag
+   ============================================================ */
+
+/* ── Task List Header ─────────────────────────────────────── */
+.task-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+  gap: var(--space-3);
+}
+
+.task-list-title {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.task-count-chip {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-full);
+  padding: 2px 8px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ── Filter Bar ───────────────────────────────────────────── */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 28px;
+  padding: 0 10px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 450;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all var(--transition);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.filter-chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.filter-chip.active {
+  background: var(--accent-light);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 500;
+}
+
+.filter-chip-clear {
+  font-size: 0.6875rem;
+  opacity: 0.7;
+  margin-left: 2px;
+}
+
+/* ── Bulk Action Bar ──────────────────────────────────────── */
+.bulk-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-4);
+  background: var(--accent-light);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-4);
+  animation: slide-down 150ms ease;
+}
+
+.bulk-bar-count {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--accent);
+  flex: 1;
+}
+
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Task Section (grouped by status/list) ────────────────── */
+.task-section {
+  margin-bottom: var(--space-6);
+}
+
+.task-section-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+  padding: 0 var(--space-1);
+}
+
+.task-section-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-tertiary);
+}
+
+.task-section-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Task Card ────────────────────────────────────────────── */
+.task-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-2);
+  cursor: pointer;
+  transition: border-color var(--transition), box-shadow var(--transition),
+              background var(--transition), transform var(--transition);
+  position: relative;
+  user-select: none;
+}
+
+.task-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 2px 8px var(--accent-light);
+}
+
+.task-card.selected {
+  border-color: var(--accent);
+  background: var(--accent-light);
+}
+
+/* Priority left border */
+.task-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 0 2px 2px 0;
+  opacity: 0;
+  transition: opacity var(--transition);
+}
+
+.task-card:hover::before,
+.task-card.selected::before { opacity: 1; }
+
+.task-card[data-priority="high"]::before   { background: var(--priority-high); }
+.task-card[data-priority="medium"]::before { background: var(--priority-medium); }
+.task-card[data-priority="low"]::before    { background: var(--priority-low); }
+
+/* Completed state */
+.task-card.completed {
+  opacity: 0.6;
+}
+
+.task-card.completed .task-title {
+  text-decoration: line-through;
+  color: var(--text-tertiary);
+}
+
+/* Pinned */
+.task-card.pinned {
+  border-color: var(--amber);
+}
+
+/* Overdue */
+.task-card.overdue .task-due-date { color: var(--red); }
+
+/* Drag */
+.task-card.dragging {
+  opacity: 0.4;
+  transform: scale(0.98);
+  box-shadow: none;
+  border-style: dashed;
+}
+
+/* ── Card Checkbox ────────────────────────────────────────── */
+.task-card-check {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+/* ── Card Body ────────────────────────────────────────────── */
+.task-card-body { flex: 1; min-width: 0; }
+
+.task-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  line-height: 1.4;
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+.task-description {
+  font-size: 0.8125rem;
+  color: var(--text-tertiary);
+  line-height: 1.5;
+  margin-bottom: 6px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* ── Card Meta row ────────────────────────────────────────── */
+.task-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.task-due-date {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  color: var(--text-tertiary);
+}
+
+.task-subtask-progress {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.6875rem;
+  color: var(--text-tertiary);
+}
+
+.task-subtask-progress .progress-bar {
+  width: 48px;
+  height: 3px;
+}
+
+/* ── Card Actions (hover) ─────────────────────────────────── */
+.task-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity var(--transition);
+  flex-shrink: 0;
+  margin-top: -2px;
+}
+
+.task-card:hover .task-card-actions { opacity: 1; }
+
+/* ── Compact view ─────────────────────────────────────────── */
+.compact .task-card {
+  padding: var(--space-2) var(--space-3);
+  margin-bottom: 2px;
+  border-radius: var(--radius-md);
+}
+
+.compact .task-description { display: none; }
+.compact .task-meta { margin-top: 2px; }
+
+/* ── Add task inline ──────────────────────────────────────── */
+.add-task-inline {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition);
+  color: var(--text-tertiary);
+  font-size: 0.8125rem;
+  margin-top: var(--space-2);
+}
+
+.add-task-inline:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-light);
+}

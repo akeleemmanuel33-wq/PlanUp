@@ -1,0 +1,107 @@
+# PlanUp — Project Structure
+
+```
+planup/
+│
+├── index.html                  # Entry point → redirects to app or auth
+│
+├── pages/
+│   ├── auth.html               # Login / Register / Google OAuth
+│   └── app.html                # Main app shell (loads after auth)
+│
+├── components/
+│   ├── sidebar.html            # Lists, nav, user avatar (injected via JS)
+│   ├── task-list.html          # Task cards + drag-drop zone
+│   ├── task-modal.html         # Create / Edit task drawer
+│   ├── task-detail.html        # Full task detail panel (subtasks, activity)
+│   └── analytics.html          # Dashboard / stats panel
+│
+├── styles/
+│   ├── base.css                # Reset, CSS variables, typography
+│   ├── layout.css              # Sidebar, main panel, grid
+│   ├── components.css          # Buttons, inputs, badges, modals
+│   ├── tasks.css               # Task cards, priority colors, status chips
+│   ├── sidebar.css             # Sidebar-specific styles
+│   ├── analytics.css           # Charts, stat cards
+│   ├── auth.css                # Auth page styles
+│   └── animations.css          # Transitions, drag states, skeletons
+│
+├── js/
+│   ├── app.js                  # App bootstrap, router, auth guard
+│   │
+│   ├── api/                    # Supabase data layer
+│   │   ├── supabase.js         # Client init + auth helpers
+│   │   ├── tasks.js            # Task CRUD
+│   │   ├── lists.js            # List CRUD
+│   │   ├── tags.js             # Tag CRUD
+│   │   ├── subtasks.js         # Subtask CRUD
+│   │   └── analytics.js        # Stats + weekly data
+│   │
+│   ├── state/
+│   │   └── store.js            # Central app state (tasks, filters, ui)
+│   │
+│   ├── utils/
+│   │   ├── dom.js              # DOM helpers ($, $$, render, toast)
+│   │   ├── date.js             # Date formatting, overdue checks
+│   │   ├── drag.js             # Drag-and-drop logic
+│   │   ├── search.js           # Search + filter logic
+│   │   ├── notifications.js    # Browser notification + reminder scheduler
+│   │   └── theme.js            # Dark/light mode + accent color
+│   │
+│   └── pages/
+│       ├── auth.js             # Auth page logic (login, register, OAuth)
+│       ├── tasks.js            # Task list rendering + interactions
+│       ├── sidebar.js          # Sidebar rendering + list switching
+│       ├── task-modal.js       # Modal open/close, form submit
+│       ├── task-detail.js      # Detail panel, subtasks, activity log
+│       └── analytics.js        # Analytics rendering + chart drawing
+│
+├── assets/
+│   ├── icons/                  # SVG icons (inline-ready)
+│   └── fonts/                  # Self-hosted fonts (optional)
+│
+├── vercel.json                 # Vercel routing config
+└── .env.example                # SUPABASE_URL, SUPABASE_ANON_KEY
+```
+
+---
+
+## Data Flow
+
+```
+User Action
+    │
+    ▼
+js/pages/*.js          ← handles UI events
+    │
+    ▼
+js/state/store.js      ← updates local state
+    │
+    ▼
+js/api/*.js            ← calls Supabase
+    │
+    ▼
+Supabase DB            ← persists data
+    │
+    ▼ (realtime or response)
+js/state/store.js      ← updates state
+    │
+    ▼
+js/pages/*.js          ← re-renders UI
+```
+
+---
+
+## File Responsibilities (quick ref)
+
+| File | Responsibility |
+|------|---------------|
+| `app.js` | Auth guard, page routing, component injection |
+| `store.js` | Single source of truth for tasks, filters, UI state |
+| `supabase.js` | Supabase client + auth |
+| `api/tasks.js` | All task DB operations |
+| `utils/dom.js` | `$()`, `$$()`, `toast()`, `render()` helpers |
+| `utils/drag.js` | Drag-and-drop reorder (native HTML5 DnD) |
+| `utils/theme.js` | Reads/writes theme to localStorage + applies CSS vars |
+| `utils/notifications.js` | `Notification.requestPermission()` + reminder scheduling |
+| `vercel.json` | SPA routing — all paths → `index.html` |

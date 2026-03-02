@@ -1,0 +1,198 @@
+/* ============================================================
+   styles/base.css — Reset, CSS variables, typography
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600&family=Geist+Mono:wght@400;500&display=swap');
+
+/* ── CSS Variables (Light Theme) ─────────────────────────── */
+:root {
+  /* Accent — overridden by JS theme.apply() */
+  --accent:         #6366f1;
+  --accent-light:   #6366f120;
+  --accent-dark:    #4f46e5;
+
+  /* Surfaces */
+  --bg:             #ffffff;
+  --bg-secondary:   #f9fafb;
+  --bg-tertiary:    #f3f4f6;
+  --surface:        #ffffff;
+  --surface-raised: #ffffff;
+  --border:         #e5e7eb;
+  --border-subtle:  #f3f4f6;
+
+  /* Text */
+  --text-primary:   #111827;
+  --text-secondary: #6b7280;
+  --text-tertiary:  #9ca3af;
+  --text-inverse:   #ffffff;
+
+  /* Status colors */
+  --red:            #ef4444;
+  --red-light:      #fef2f2;
+  --amber:          #f59e0b;
+  --amber-light:    #fffbeb;
+  --green:          #10b981;
+  --green-light:    #f0fdf4;
+  --blue:           #3b82f6;
+  --blue-light:     #eff6ff;
+
+  /* Priority */
+  --priority-high:    var(--red);
+  --priority-medium:  var(--amber);
+  --priority-low:     var(--green);
+
+  /* Layout */
+  --sidebar-width:  240px;
+  --detail-width:   380px;
+  --header-height:  56px;
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+
+  /* Radius */
+  --radius-sm:  4px;
+  --radius-md:  8px;
+  --radius-lg:  12px;
+  --radius-xl:  16px;
+  --radius-full: 9999px;
+
+  /* Shadow */
+  --shadow-sm:  0 1px 2px rgba(0,0,0,0.05);
+  --shadow-md:  0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -1px rgba(0,0,0,0.04);
+  --shadow-lg:  0 10px 15px -3px rgba(0,0,0,0.08), 0 4px 6px -2px rgba(0,0,0,0.04);
+  --shadow-xl:  0 20px 25px -5px rgba(0,0,0,0.1);
+
+  /* Transition */
+  --transition: 150ms ease;
+  --transition-slow: 250ms ease;
+
+  /* Font */
+  --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'Geist Mono', 'Fira Code', monospace;
+}
+
+/* ── Dark Theme ───────────────────────────────────────────── */
+[data-theme="dark"] {
+  --bg:             #0f0f10;
+  --bg-secondary:   #18181b;
+  --bg-tertiary:    #27272a;
+  --surface:        #18181b;
+  --surface-raised: #27272a;
+  --border:         #3f3f46;
+  --border-subtle:  #27272a;
+
+  --text-primary:   #f4f4f5;
+  --text-secondary: #a1a1aa;
+  --text-tertiary:  #71717a;
+
+  --red-light:      #450a0a;
+  --amber-light:    #451a03;
+  --green-light:    #052e16;
+  --blue-light:     #0c1a4d;
+
+  --shadow-sm:  0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md:  0 4px 6px -1px rgba(0,0,0,0.4);
+  --shadow-lg:  0 10px 15px -3px rgba(0,0,0,0.5);
+}
+
+/* ── Reset ────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg);
+  color: var(--text-primary);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* ── Typography ───────────────────────────────────────────── */
+h1, h2, h3, h4 { font-weight: 600; line-height: 1.25; }
+h1 { font-size: 1.5rem; }
+h2 { font-size: 1.25rem; }
+h3 { font-size: 1rem; }
+h4 { font-size: 0.875rem; }
+
+p { color: var(--text-secondary); }
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+code, pre {
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+}
+
+/* ── Utility classes ──────────────────────────────────────── */
+.hidden  { display: none !important; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+.text-xs  { font-size: 0.75rem; }
+.text-sm  { font-size: 0.875rem; }
+.text-base { font-size: 1rem; }
+
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+
+.text-muted { color: var(--text-secondary); }
+.text-faint { color: var(--text-tertiary); }
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Toast ────────────────────────────────────────────────── */
+#planup-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--text-primary);
+  color: var(--text-inverse);
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: var(--shadow-xl);
+  transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 9999;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+#planup-toast.toast--visible {
+  transform: translateX(-50%) translateY(0);
+}
+
+#planup-toast.toast--error   { background: var(--red); }
+#planup-toast.toast--warning { background: var(--amber); }
+#planup-toast.toast--info    { background: var(--blue); }
+
+.toast-icon { font-weight: 700; }
+
+/* ── Scrollbars ───────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-tertiary); }

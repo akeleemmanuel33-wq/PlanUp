@@ -1,0 +1,92 @@
+/* ============================================================
+   styles/animations.css
+   ============================================================ */
+
+/* ── Page load stagger ────────────────────────────────────── */
+.fade-in {
+  animation: fade-in 200ms ease forwards;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.stagger > * {
+  opacity: 0;
+  animation: fade-in 200ms ease forwards;
+}
+
+.stagger > *:nth-child(1)  { animation-delay: 30ms; }
+.stagger > *:nth-child(2)  { animation-delay: 60ms; }
+.stagger > *:nth-child(3)  { animation-delay: 90ms; }
+.stagger > *:nth-child(4)  { animation-delay: 120ms; }
+.stagger > *:nth-child(5)  { animation-delay: 150ms; }
+.stagger > *:nth-child(6)  { animation-delay: 180ms; }
+.stagger > *:nth-child(7)  { animation-delay: 210ms; }
+.stagger > *:nth-child(8)  { animation-delay: 240ms; }
+.stagger > *:nth-child(9)  { animation-delay: 270ms; }
+.stagger > *:nth-child(10) { animation-delay: 300ms; }
+
+/* ── Task card entry ──────────────────────────────────────── */
+.task-card {
+  animation: task-enter 180ms ease both;
+}
+
+@keyframes task-enter {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Checkbox check animation ─────────────────────────────── */
+.checkbox.checking {
+  animation: check-pop 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes check-pop {
+  0%   { transform: scale(1); }
+  40%  { transform: scale(0.82); }
+  100% { transform: scale(1); }
+}
+
+/* ── Slide up (modal / toast) ─────────────────────────────── */
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Spin ─────────────────────────────────────────────────── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.spin {
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+
+/* ── Pulse (loading badge) ────────────────────────────────── */
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+.pulse { animation: pulse 1.4s ease infinite; }
+
+/* ── Drag over zone ───────────────────────────────────────── */
+.drag-over {
+  outline: 2px dashed var(--accent);
+  outline-offset: 4px;
+  background: var(--accent-light);
+  border-radius: var(--radius-lg);
+}
+
+/* ── Task complete celebration ────────────────────────────── */
+@keyframes complete-flash {
+  0%   { background: var(--green-light); }
+  100% { background: transparent; }
+}
+
+.task-card.just-completed {
+  animation: complete-flash 600ms ease forwards;
+}

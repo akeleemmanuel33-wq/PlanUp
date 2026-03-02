@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8"/>
+<title>PlanUp Debug</title>
+<style>
+  body{font-family:monospace;padding:24px;background:#0f172a;color:#e2e8f0;font-size:13px}
+  h2{color:#6366f1;margin-bottom:16px}
+  .box{background:#1e293b;border:1px solid #334155;border-radius:8px;padding:16px;margin-bottom:12px}
+  .ok{color:#10b981} .err{color:#ef4444} .warn{color:#f59e0b}
+  button{background:#6366f1;color:#fff;border:none;padding:8px 16px;border-radius:6px;cursor:pointer;font-family:monospace;margin:4px}
+  input{background:#1e293b;border:1px solid #334155;color:#e2e8f0;padding:6px 10px;border-radius:6px;font-family:monospace;width:100%;margin:4px 0}
+  pre{white-space:pre-wrap;word-break:break-all;margin-top:8px}
+</style>
+</head>
+<body>
+
+<h2>🔍 PlanUp Auth Debugger</h2>
+
+<div class="box">
+  <b>Step 1 — Config</b>
+  <pre id="cfg-out">Enter your Supabase URL and key below, then click Test</pre>
+  <input id="d-url" placeholder="https://xxxxx.supabase.co" />
+  <input id="d-key" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." />
+  <br/>
+  <button onclick="runAll()">▶ Run All Tests</button>
+</div>
+
+<div class="box">
+  <b>Step 2 — Session</b>
+  <pre id="session-out">waiting…</pre>
+</div>
+
+<div class="box">
+  <b>Step 3 — Auth UID from DB</b>
+  <pre id="uid-out">waiting…</pre>
+</div>
+
+<div class="box">
+  <b>Step 4 — Test INSERT to tasks</b>
+  <pre id="insert-out">waiting…</pre>
+</div>
+
+<div class="box">
+  <b>Step 5 — RLS Policies on tasks table</b>
+  <pre id="rls-out">waiting…</pre>
+</div>
+
+<div class="box">
+  <b>Step 6 — Full diagnosis</b>
+  <pre id="diag-out">waiting…</pre>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script>
+async function runAll() {
+  const url = document.getElementById('d-url').value.trim();
+  const key = document.getElementById('d-key').value.trim();
+
+  if (!url || !key) { alert('Enter URL and key first'); return; }
+
+  const sb = supabase.createClient(url, key);
+
+  // ── Test 1: Session ──────────────────────────────────────
+  out('session-out', 'Testing session…');
+  const { data:{ session }, error:sErr } = await sb.auth.getSession();
+  if (sErr || !session) {
+    out('session-out', `❌ NO SESSION\n${sErr?.message||'Not logged in'}\n\nFix: Sign in at auth.html first`, 'err');
+    out('uid-out','⏭ Skipped (no session)','warn');
+    out('insert-out','⏭ Skipped (no session)','warn');
+    out('rls-out','⏭ Skipped (no session)','warn');
+    diagnose(null, null, null);
+    return;
+  }
+
+  const userId = session.user.id;
+  const email  = session.user.email;
+  out('session-out',
+    `✅ SESSION FOUND\n` +
+    `user.id    = ${userId}\n` +
+    `user.email = ${email}\n` +
+    `token exp  = ${new Date(session.expires_at*1000).toLocaleString()}\n` +
+    `access_token (first 40): ${session.access_token.slice(0,40)}…`, 'ok');
+
+  // ── Test 2: auth.uid() from DB ───────────────────────────
+  out('uid-out', 'Calling auth.uid() via RPC…');
+  const { data:uidData, error:uidErr } = await sb.rpc('get_my_uid').catch(()=>({data:null,error:{message:'RPC not found'}}));
+  if (uidErr) {
+    // Try a direct query instead
+    const { data:meData, error:meErr } = await sb.from('user_preferences').select('user_id').limit(1);
+    if (meErr) {
+      out('uid-out', `⚠️ Could not verify auth.uid() from DB\nError: ${meErr.message}\n\nThis is OK — continuing with session user_id`, 'warn');
+    } else {
+      out('uid-out', `✅ DB query works\nuser_preferences row: ${JSON.stringify(meData)}`, 'ok');
+    }
+  } else {
+    const match = uidData === userId;
+    out('uid-out',
+      `${match?'✅':'❌'} auth.uid() = ${uidData}\n` +
+      `session user.id = ${userId}\n` +
+      `Match: ${match?'YES — good!':'NO — this is the bug!'}`,
+      match?'ok':'err');
+  }
+
+  // ── Test 3: INSERT ───────────────────────────────────────
+  out('insert-out', 'Attempting test INSERT to tasks…');
+  const testPayload = {
+    user_id:  userId,
+    title:    '__debug_test_'+Date.now(),
+    status:   'todo',
+    priority: 'medium',
+  };
+  out('insert-out', `Inserting with user_id = ${userId}\nPayload: ${JSON.stringify(testPayload,null,2)}\n\nWaiting…`);
+
+  const { data:ins, error:insErr } = await sb.from('tasks')
+    .insert(testPayload)
+    .select('id,user_id,title')
+    .single();
+
+  if (insErr) {
+    out('insert-out',
+      `❌ INSERT FAILED\nCode: ${insErr.code}\nMessage: ${insErr.message}\nDetails: ${insErr.details||'none'}\nHint: ${insErr.hint||'none'}`,
+      'err');
+    diagnose(userId, false, insErr);
+  } else {
+    out('insert-out',
+      `✅ INSERT SUCCEEDED!\nInserted row:\n  id      = ${ins.id}\n  user_id = ${ins.user_id}\n  title   = ${ins.title}\n\nCleaning up…`,
+      'ok');
+    // Clean up test row
+    await sb.from('tasks').delete().eq('id', ins.id);
+    diagnose(userId, true, null);
+  }
+
+  // ── Test 4: Check RLS ────────────────────────────────────
+  out('rls-out', 'Checking what policies exist…');
+  // We can check by looking at what operations work
+  const { data:rows, error:rowErr } = await sb.from('tasks').select('id').limit(5);
+  if (rowErr) {
+    out('rls-out', `❌ SELECT also fails: ${rowErr.message}`, 'err');
+  } else {
+    out('rls-out', `✅ SELECT works — found ${rows?.length||0} tasks\nRLS SELECT policy is OK`, 'ok');
+  }
+}
+
+function diagnose(userId, insertOk, insertErr) {
+  const d = document.getElementById('diag-out');
+  if (!userId) {
+    d.innerHTML = `<span class="err">❌ ROOT CAUSE: Not signed in\n\nFIX: Go to auth.html and sign in first.</span>`;
+    return;
+  }
+  if (insertOk) {
+    d.innerHTML = `<span class="ok">✅ EVERYTHING WORKS!\n\nThe auth and DB are fine.\nIf app.html is still failing, open browser console (F12) and look for errors there.\nShare the console error and I can fix it.</span>`;
+    return;
+  }
+
+  const msg = insertErr?.message || '';
+  const code = insertErr?.code || '';
+
+  let fix = '';
+
+  if (msg.includes('user_id_fkey') || code === '23503') {
+    fix = `ROOT CAUSE: Foreign key violation
+Your user_id (${userId}) does not exist in auth.users
+
+This means one of:
+1. The tasks table references auth.users but your user was deleted
+2. The session user.id is wrong
+3. The Supabase project URL/key mismatch (you're pointing at a different project)
+
+FIX — Run this SQL in Supabase SQL Editor:
+───────────────────────────────────────────
+SELECT id, email FROM auth.users WHERE id = '${userId}';
+───────────────────────────────────────────
+If that returns NO rows → your user doesn't exist in the DB
+→ Sign up again at auth.html
+
+If it returns a row → run fix_rls_insert.sql`;
+  } else if (msg.includes('row-level security') || code === '42501') {
+    fix = `ROOT CAUSE: RLS policy blocking the insert
+
+FIX — Run this in Supabase SQL Editor:
+───────────────────────────────────────────
+-- Check if RLS is enabled
+SELECT tablename, rowsecurity FROM pg_tables WHERE tablename='tasks';
+
+-- Check policies
+SELECT * FROM pg_policies WHERE tablename='tasks';
+
+-- Quick fix: add permissive insert policy
+DROP POLICY IF EXISTS "Users can insert their own tasks" ON tasks;
+CREATE POLICY "Users can insert their own tasks" ON tasks
+  FOR INSERT WITH CHECK (auth.uid() = user_id);
+───────────────────────────────────────────`;
+  } else {
+    fix = `Unknown error: ${msg}\nCode: ${code}`;
+  }
+
+  d.innerHTML = `<span class="err">${fix}</span>`;
+}
+
+function out(id, text, cls='') {
+  const el = document.getElementById(id);
+  el.className = cls;
+  el.textContent = text;
+}
+</script>
+</body>
+</html>
