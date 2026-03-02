@@ -185,7 +185,7 @@ async function forgotPw() {
   else showOk('Password reset email sent! Check your inbox.');
 }
 
-function goApp() { location.href = location.origin + '/pages/app.html'; }
+function goApp() { location.href = location.origin + 'PlanUp/pages/app.html'; }
 function showErr(m) { const e=document.getElementById('err-box'); e.textContent=m; e.classList.add('on'); }
 function hideErr()  { document.getElementById('err-box').classList.remove('on'); }
 function showOk(m)  { const e=document.getElementById('ok-box');  e.textContent=m; e.classList.add('on'); }
