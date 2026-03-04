@@ -89,8 +89,43 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
 .fc.on{background:var(--accent-light);border-color:var(--accent);color:var(--accent);font-weight:500}
 
 /* Bulk bar */
-#bulk-bar{display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--accent-light);border:1px solid var(--accent);border-radius:var(--r2);margin-bottom:14px}
-.bulk-cnt{font-size:13px;font-weight:500;color:var(--accent);flex:1}
+#bulk-bar{
+  display:flex;align-items:center;gap:6px;padding:10px 14px;
+  background:var(--bg2);border:1px solid var(--accent);
+  border-radius:var(--r2);margin-bottom:14px;flex-wrap:wrap;
+  box-shadow:0 0 0 3px var(--accent-light);
+}
+.bulk-cnt{font-size:13px;font-weight:600;color:var(--accent);flex:1;min-width:80px}
+.bulk-sep{width:1px;height:20px;background:var(--border);flex-shrink:0}
+/* Bulk priority dropdown */
+#bulk-priority-wrap{position:relative;display:inline-flex}
+#bulk-priority-dd{
+  position:absolute;top:calc(100% + 6px);left:0;z-index:100;
+  background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);
+  padding:4px;min-width:150px;box-shadow:var(--sh3);display:none;flex-direction:column;gap:2px;
+}
+#bulk-priority-dd.open{display:flex}
+#bulk-priority-dd button{
+  display:flex;align-items:center;gap:8px;padding:7px 10px;
+  background:none;border:none;border-radius:var(--r);
+  font-family:inherit;font-size:13px;color:var(--text);cursor:pointer;text-align:left;
+}
+#bulk-priority-dd button:hover{background:var(--bg3)}
+/* Bulk list dropdown */
+#bulk-list-wrap{position:relative;display:inline-flex}
+#bulk-list-dd{
+  position:absolute;top:calc(100% + 6px);left:0;z-index:100;
+  background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);
+  padding:4px;min-width:160px;box-shadow:var(--sh3);display:none;flex-direction:column;gap:2px;
+}
+#bulk-list-dd.open{display:flex}
+#bulk-list-dd button{
+  display:flex;align-items:center;gap:8px;padding:7px 10px;
+  background:none;border:none;border-radius:var(--r);
+  font-family:inherit;font-size:13px;color:var(--text);cursor:pointer;
+}
+#bulk-list-dd button:hover{background:var(--bg3)}
+.bulk-list-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 
 /* Task card */
 .card{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);margin-bottom:7px;cursor:pointer;transition:border-color .15s,box-shadow .15s;position:relative;animation:fadeUp .18s ease both}
@@ -100,6 +135,38 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
 .card.pinned{border-color:var(--amber)}
 .card.overdue .cdue{color:var(--red)}
 .card.sel{background:var(--accent-light);border-color:var(--accent)}
+
+/* ── Selection mode (matches test-bulk.html exactly) ── */
+.card-check{
+  width:17px;height:17px;border-radius:5px;
+  border:2px solid var(--border);flex-shrink:0;
+  transition:all .15s;background:var(--bg);margin-top:1px;
+}
+body.sel-mode .card.sel .card-check{
+  background:var(--accent);border-color:var(--accent);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:center;
+}
+body:not(.sel-mode) .card-check{display:none}
+body.sel-mode .card .cb{display:none}
+body.sel-mode .card{cursor:pointer;user-select:none;-webkit-user-select:none}
+.card.pressing{background:var(--accent-light)!important}
+#sel-mode-badge{
+  display:none;background:var(--accent);color:#fff;
+  font-size:11px;font-weight:600;padding:5px 14px;border-radius:99px;
+  margin-bottom:12px;text-align:center;
+  animation:selFadeIn .2s ease;
+}
+body.sel-mode #sel-mode-badge{display:block}
+@keyframes selFadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+body.sel-mode .card.sel 
+body:not(.sel-mode) 
+
+
+
+
+
 .card.dragging{opacity:.35;border-style:dashed}
 .card::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:0 2px 2px 0;opacity:0;transition:opacity .15s}
 .card:hover::before,.card.sel::before{opacity:1}
@@ -358,6 +425,15 @@ body.focus-mode #focus-badge{display:flex}
 #qc-input::placeholder{color:var(--text3)}
 #qc-hint{font-size:11px;color:var(--text3);white-space:nowrap}
 
+
+/* ── SVG Icons ── */
+.ic { display:inline-flex;align-items:center;justify-content:center;flex-shrink:0; }
+.ic svg { display:block; }
+.icon-btn .ic { pointer-events:none; }
+.s-item .ic   { opacity:.7; }
+.s-item.on .ic{ opacity:1; }
+.pin-active    { color:var(--amber)!important; }
+.pin-active .ic svg { stroke:var(--amber); }
 </style>
 </head>
 <body>
@@ -371,18 +447,18 @@ body.focus-mode #focus-badge{display:flex}
     </div>
     <div class="s-body">
       <div>
-        <button class="s-item on" id="n-all"      onclick="nav('all')">      <span>📋</span><span class="lbl">All Tasks</span> <span class="cnt" id="c-all">0</span></button>
-        <button class="s-item"    id="n-today"    onclick="nav('today')">    <span>☀️</span><span class="lbl">Today</span>     <span class="cnt" id="c-today">0</span></button>
-        <button class="s-item"    id="n-upcoming" onclick="nav('upcoming')"> <span>📅</span><span class="lbl">Upcoming</span>  <span class="cnt" id="c-upcoming">0</span></button>
-        <button class="s-item"    id="n-overdue"  onclick="nav('overdue')">  <span>🔴</span><span class="lbl">Overdue</span>   <span class="cnt" id="c-overdue">0</span></button>
-        <button class="s-item"    id="n-analytics"onclick="nav('analytics')"><span>📊</span><span class="lbl">Analytics</span></button>
+        <button class="s-item on" id="n-all"      onclick="nav('all')"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><polyline points="3 6 4 7 6 5"/><polyline points="3 12 4 13 6 11"/><polyline points="3 18 4 19 6 17"/></svg></span>  <span class="lbl">All Tasks</span> <span class="cnt" id="c-all">0</span></button>
+        <button class="s-item"    id="n-today"    onclick="nav('today')"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></span>      <span class="lbl">Today</span>     <span class="cnt" id="c-today">0</span></button>
+        <button class="s-item"    id="n-upcoming" onclick="nav('upcoming')"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>  <span class="lbl">Upcoming</span>  <span class="cnt" id="c-upcoming">0</span></button>
+        <button class="s-item"    id="n-overdue"  onclick="nav('overdue')"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>  <span class="lbl">Overdue</span>   <span class="cnt" id="c-overdue">0</span></button>
+        <button class="s-item"    id="n-analytics"onclick="nav('analytics')"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>  <span class="lbl">Analytics</span></button>
       </div>
       <div class="s-label">Lists</div>
       <div id="s-lists"></div>
-      <button class="s-add" onclick="addList()">＋ New list</button>
+      <button class="s-add" onclick="addList()"><span class="ic" style="width:13px;height:13px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span> New list</button>
       <div class="s-label" style="display:flex;align-items:center;justify-content:space-between;padding-right:12px">
         <span>Tags</span>
-        <button onclick="openTagManager()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:16px;line-height:1;padding:0" title="Manage tags">＋</button>
+        <button onclick="openTagManager()" style="background:none;border:none;cursor:pointer;color:var(--text3);padding:0;display:flex;align-items:center" title="Manage tags"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
       </div>
       <div id="s-tags"></div>
     </div>
@@ -410,19 +486,19 @@ body.focus-mode #focus-badge{display:flex}
         <input type="text" placeholder="Search tasks…" oninput="doSearch(this.value)" id="s-inp"/>
       </div>
       <div class="tb-actions">
-        <button class="btn btn-ghost" onclick="toggleFilters()">⚡ Filter</button>
-        <button class="icon-btn" id="sort-btn" onclick="cycleSortMenu()" title="Sort tasks" style="position:relative">⇅
+        <button class="btn btn-ghost" onclick="toggleFilters()"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="21" y1="4" x2="14" y2="4"/><line x1="10" y1="4" x2="3" y2="4"/><line x1="21" y1="12" x2="12" y2="12"/><line x1="8" y1="12" x2="3" y2="12"/><line x1="21" y1="20" x2="16" y2="20"/><line x1="12" y1="20" x2="3" y2="20"/><circle cx="12" cy="4" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="14" cy="20" r="2"/></svg></span> Filter</button>
+        <button class="icon-btn" id="sort-btn" onclick="cycleSortMenu()" title="Sort tasks" style="position:relative"><span class="ic" style="width:15px;height:15px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="11 17 6 22 1 17"/><path d="M6 3v19"/><polyline points="13 7 18 2 23 7"/><path d="M18 3v19"/></svg></span>
           <div id="sort-menu" style="display:none;position:absolute;top:36px;right:0;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);box-shadow:var(--sh2);min-width:160px;z-index:50;overflow:hidden">
-            <div class="dd-item" onclick="event.stopPropagation();setSort('default')">📋 Default</div>
-            <div class="dd-item" onclick="event.stopPropagation();setSort('priority')">🔴 Priority</div>
-            <div class="dd-item" onclick="event.stopPropagation();setSort('due')">📅 Due date</div>
-            <div class="dd-item" onclick="event.stopPropagation();setSort('alpha')">🔤 A → Z</div>
-            <div class="dd-item" onclick="event.stopPropagation();setSort('created')">🕐 Recently added</div>
+            <div class="dd-item" onclick="event.stopPropagation();setSort('default')"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><polyline points="3 6 4 7 6 5"/><polyline points="3 12 4 13 6 11"/><polyline points="3 18 4 19 6 17"/></svg></span> Default</div>
+            <div class="dd-item" onclick="event.stopPropagation();setSort('priority')"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span> Priority</div>
+            <div class="dd-item" onclick="event.stopPropagation();setSort('due')"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span> Due date</div>
+            <div class="dd-item" onclick="event.stopPropagation();setSort('alpha')"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 14h-5"/><path d="M16 16v-3.5a2.5 2.5 0 0 1 5 0V16"/><path d="M4.5 13h6"/><path d="m3 16 4.5-9 4.5 9"/></svg></span> A → Z</div>
+            <div class="dd-item" onclick="event.stopPropagation();setSort('created')"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span> Recently added</div>
           </div>
         </button>
-        <button class="icon-btn" onclick="toggleFocus()" title="Focus mode (F)">🎯</button>
-        <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
-        <button class="btn btn-primary" onclick="openModal(null)" title="New task (C)">＋ New Task</button>
+        <button class="icon-btn" onclick="toggleFocus()" title="Focus mode (F)"><span class="ic" style="width:15px;height:15px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/></svg></span></button>
+        <button class="icon-btn" id="theme-icon-btn" onclick="toggleTheme()" title="Toggle theme"><span class="ic" style="width:15px;height:15px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span></button>
+        <button class="btn btn-primary" onclick="openModal(null)" title="New task (C)"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span> New Task</button>
       </div>
     </div>
 
@@ -435,18 +511,75 @@ body.focus-mode #focus-badge{display:flex}
         <button class="fc" onclick="setFilter('status','completed')">Completed</button>
         <span style="width:1px;height:16px;background:var(--border)"></span>
         <span style="font-size:11px;font-weight:500;color:var(--text3)">Priority:</span>
-        <button class="fc" onclick="setFilter('priority','high')">🔴 High</button>
+        <button class="fc" onclick="setFilter('priority','high')"><span class="ic" style="width:12px;height:12px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span> High</button>
         <button class="fc" onclick="setFilter('priority','medium')">🟡 Medium</button>
         <button class="fc" onclick="setFilter('priority','low')">🟢 Low</button>
-        <button class="fc" onclick="clearFilters()" style="margin-left:auto">✕ Clear</button>
+        <button class="fc" onclick="clearFilters()" style="margin-left:auto"><span class="ic" style="width:12px;height:12px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span> Clear</button>
       </div>
 
       <!-- bulk bar -->
       <div id="bulk-bar" class="hidden">
         <span class="bulk-cnt" id="bulk-cnt">0 selected</span>
-        <button class="btn btn-ghost btn-sm" onclick="bulkDone()">✓ Complete</button>
-        <button class="btn btn-danger btn-sm" onclick="bulkDel()">🗑 Delete</button>
-        <button class="btn btn-ghost btn-sm" onclick="clearSel()">✕</button>
+        <div class="bulk-sep"></div>
+
+        <!-- Complete -->
+        <button class="btn btn-ghost btn-sm" onclick="bulkDone()" title="Mark all complete">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          Complete
+        </button>
+
+        <!-- Reopen -->
+        <button class="btn btn-ghost btn-sm" onclick="bulkReopen()" title="Mark all incomplete">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          Reopen
+        </button>
+
+        <div class="bulk-sep"></div>
+
+        <!-- Set Priority -->
+        <div class="bulk-priority-wrap" id="bulk-priority-wrap">
+          <button class="btn btn-ghost btn-sm" onclick="toggleBulkPriorityDD()" title="Set priority">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+            Priority
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div id="bulk-priority-dd">
+            <button onclick="bulkSetPriority('high')">  <span style="width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block"></span> High</button>
+            <button onclick="bulkSetPriority('medium')"><span style="width:8px;height:8px;border-radius:50%;background:#f59e0b;display:inline-block"></span> Medium</button>
+            <button onclick="bulkSetPriority('low')">   <span style="width:8px;height:8px;border-radius:50%;background:#10b981;display:inline-block"></span> Low</button>
+            <button onclick="bulkSetPriority('none')">  <span style="width:8px;height:8px;border-radius:50%;background:var(--border2);display:inline-block"></span> None</button>
+          </div>
+        </div>
+
+        <!-- Move to List -->
+        <div class="bulk-list-wrap" id="bulk-list-wrap">
+          <button class="btn btn-ghost btn-sm" onclick="toggleBulkListDD()" title="Move to list">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            Move to
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div id="bulk-list-dd" style="max-height:220px;overflow-y:auto">
+            <!-- populated by renderBulkListDD() -->
+          </div>
+        </div>
+
+        <div class="bulk-sep"></div>
+
+        <!-- Delete -->
+        <button class="btn btn-danger btn-sm" onclick="bulkDel()" title="Delete selected">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+          Delete
+        </button>
+
+        <!-- Select / Deselect All -->
+        <button class="btn btn-ghost btn-sm" onclick="selectAll()" title="Select all visible tasks" style="margin-left:auto">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg>
+          All
+        </button>
+        <button class="btn btn-ghost btn-sm" onclick="clearSel()" title="Clear selection">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          None
+        </button>
       </div>
 
       <div class="ta-header">
@@ -459,21 +592,22 @@ body.focus-mode #focus-badge{display:flex}
         <div class="skel" style="height:68px;opacity:.6"></div>
         <div class="skel" style="height:68px;opacity:.3"></div>
       </div>
-      <button class="add-inline" onclick="openModal(null)">＋ Add a task</button>
+      <button class="add-inline" onclick="openModal(null)"><span class="ic" style="width:13px;height:13px;display:inline-flex;align-items:center;justify-content:center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span> Add a task</button>
     </div>
   </main>
 </div>
 
 <!-- MODAL -->
 <!-- FAB -->
-<button id="fab" onclick="openModal(null)" title="New task">＋</button>
+<div id="sel-mode-badge">✓ Selection mode — tap cards to select</div>
+<button id="fab" onclick="openModal(null)" title="New task"><span class="ic" style="width:22px;height:22px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
 
 <!-- Focus mode badge -->
-<div id="focus-badge" onclick="toggleFocus()">🎯 Focus mode — click to exit</div>
+<div id="focus-badge" onclick="toggleFocus()"><span class="ic" style="width:12px;height:12px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/></svg></span> Focus mode — click to exit</div>
 
 <!-- Quick capture -->
 <div id="quick-capture">
-  <span style="font-size:16px">⚡</span>
+  <span class="ic" style="width:16px;height:16px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
   <input id="qc-input" placeholder="Quick capture — type and press Enter…" onkeydown="qcKey(event)"/>
   <span class="qc-hint">Enter to save · Esc to close</span>
 </div>
@@ -482,7 +616,7 @@ body.focus-mode #focus-badge{display:flex}
 <div id="cmd-overlay" onclick="cmdOverlayClick(event)">
   <div id="cmd-box">
     <div id="cmd-input-wrap">
-      <span>⌘</span>
+      <span class="ic" style="width:18px;height:18px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg></span>
       <input id="cmd-input" placeholder="Search tasks, actions…" oninput="cmdSearch(this.value)" onkeydown="cmdKey(event)" autocomplete="off"/>
     </div>
     <div id="cmd-results"></div>
@@ -498,7 +632,7 @@ body.focus-mode #focus-badge{display:flex}
   <div class="modal">
     <div class="mh">
       <h3 id="m-title">New Task</h3>
-      <button class="icon-btn" onclick="closeModal()" style="font-size:13px">✕</button>
+      <button class="icon-btn" onclick="closeModal()"><span class="ic" style="width:16px;height:16px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></button>
     </div>
     <div class="mb">
       <div class="fg">
@@ -546,11 +680,11 @@ body.focus-mode #focus-badge{display:flex}
       <div class="fg">
         <label class="fl">Subtasks</label>
         <div id="f-subs" style="display:flex;flex-direction:column;gap:5px"></div>
-        <button class="btn btn-ghost btn-sm" style="margin-top:4px;align-self:flex-start" onclick="addStRow()">＋ Add subtask</button>
+        <button class="btn btn-ghost btn-sm" style="margin-top:4px;align-self:flex-start" onclick="addStRow()"><span class="ic" style="width:13px;height:13px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span> Add subtask</button>
       </div>
     </div>
     <div class="mf">
-      <button class="btn btn-ghost btn-sm" id="pin-btn" onclick="togglePin()">📌 Pin</button>
+      <button class="btn btn-ghost btn-sm" id="pin-btn" onclick="togglePin()"><span class="ic" style="width:13px;height:13px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24z"/></svg></span> Pin</button>
       <div style="display:flex;gap:8px">
         <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
         <button class="btn btn-primary" id="save-btn" onclick="saveTask()">Save Task</button>
@@ -561,10 +695,10 @@ body.focus-mode #focus-badge{display:flex}
 
 <!-- USER DROPDOWN -->
 <div class="ddrop" id="ddrop">
-  <button class="dd-item" onclick="toggleTheme();closeDD()">🌙 Toggle theme</button>
+  <button class="dd-item" onclick="toggleTheme();closeDD()" id="theme-dd-btn"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span> Toggle theme</button>
   <button class="dd-item" onclick="closeDD()">⊟ Compact view</button>
   <div class="dd-sep"></div>
-  <button class="dd-item red" onclick="signOut()">↪ Sign out</button>
+  <button class="dd-item red" onclick="signOut()"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Sign out</button>
 </div>
 
 <div id="toast"></div>
@@ -574,7 +708,7 @@ body.focus-mode #focus-badge{display:flex}
   <div class="modal" style="max-width:440px">
     <div class="mh">
       <h3>Manage Tags</h3>
-      <button class="icon-btn" onclick="closeTagManager()" style="font-size:13px">✕</button>
+      <button class="icon-btn" onclick="closeTagManager()"><span class="ic" style="width:16px;height:16px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></button>
     </div>
     <div class="mb" style="gap:10px">
       <!-- Create new tag -->
@@ -589,7 +723,7 @@ body.focus-mode #focus-badge{display:flex}
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 // ══════════════════════════════════════════════
 // CONFIG
@@ -624,17 +758,88 @@ let selTags = new Set();
 // ══════════════════════════════════════════════
 // BOOT
 // ══════════════════════════════════════════════
+
+// ══════════════════════════════════════════════
+// NOTIFICATIONS
+// ══════════════════════════════════════════════
+let _reminderTimers = [];
+
+async function requestNotifPermission() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'default') {
+    await Notification.requestPermission();
+  }
+}
+
+function scheduleReminders() {
+  // Clear existing timers
+  _reminderTimers.forEach(t => clearTimeout(t));
+  _reminderTimers = [];
+
+  if (!('Notification' in window) || Notification.permission !== 'granted') return;
+
+  const now = Date.now();
+  tasks.forEach(task => {
+    if (!task.reminder || task.status === 'completed') return;
+    const remTime = new Date(task.reminder).getTime();
+    const delay = remTime - now;
+    if (delay < 0 || delay > 7 * 24 * 60 * 60 * 1000) return; // skip past or >7 days away
+
+    const timer = setTimeout(() => {
+      const n = new Notification('PlanUp — ' + task.title, {
+        body: task.due_date
+          ? 'Due ' + new Date(task.due_date).toLocaleDateString(undefined, {weekday:'short',month:'short',day:'numeric'})
+          : 'Tap to open PlanUp',
+        icon: '/favicon.ico',
+        tag:  task.id, // prevents duplicate notifications for same task
+        requireInteraction: task.priority === 'high',
+      });
+      n.onclick = () => { window.focus(); openModal(task.id); n.close(); };
+    }, delay);
+
+    _reminderTimers.push(timer);
+  });
+
+  if (_reminderTimers.length > 0) {
+    console.log('[PlanUp] Scheduled', _reminderTimers.length, 'reminder(s)');
+  }
+}
+
+function showNotifPrompt() {
+  if (!('Notification' in window)) return;
+  if (Notification.permission !== 'default') return; // already decided
+  // Show a soft in-app prompt instead of hitting the browser cold
+  const bar = document.createElement('div');
+  bar.id = 'notif-prompt';
+  bar.innerHTML = `
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    <span>Enable reminders to get notified when tasks are due</span>
+    <button onclick="requestNotifPermission().then(()=>{scheduleReminders();this.closest('#notif-prompt').remove()})" class="btn btn-primary btn-sm">Enable</button>
+    <button onclick="this.closest('#notif-prompt').remove()" class="btn btn-ghost btn-sm">Not now</button>
+  `;
+  bar.style.cssText = `
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+    display:flex;align-items:center;gap:10px;
+    background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);
+    padding:12px 16px;box-shadow:var(--sh3);z-index:500;
+    font-size:13px;color:var(--text2);max-width:480px;width:calc(100% - 32px);
+    animation:slideUp .3s ease;
+  `;
+  document.body.appendChild(bar);
+  // Auto dismiss after 12s
+  setTimeout(() => bar.remove(), 12000);
+}
+
 async function boot() {
   // theme
-  document.documentElement.setAttribute('data-theme', localStorage.getItem('pu-theme')||'light');
-
+  const savedTheme = localStorage.getItem('pu-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', savedTheme);
   // get session
   const { data:{ session }, error:sErr } = await sb.auth.getSession();
   if (sErr || !session) return redirect();
 
   // store user from session — this is the authoritative user_id
   USER = session.user;
-  console.log('USER ID:', USER.id);
 
   // show user in sidebar
   const name = USER.user_metadata?.full_name || USER.email.split('@')[0];
@@ -645,6 +850,8 @@ async function boot() {
 
   // load data
   await loadAll();
+  // ask for notification permission softly after 2s
+  setTimeout(showNotifPrompt, 2000);
 }
 
 async function loadAll() {
@@ -652,6 +859,7 @@ async function loadAll() {
   tasks = t; lists = l; tags = g;
   renderSidebar();
   renderTasks();
+  scheduleReminders();
   updateCounts();
 }
 
@@ -677,7 +885,7 @@ async function loadTags() {
 // ══════════════════════════════════════════════
 // SIDEBAR
 // ══════════════════════════════════════════════
-function renderSidebar() {
+function renderSidebar() { /* called after */
   // lists
   q('s-lists').innerHTML = lists.map(l => {
     const cnt = tasks.filter(t=>t.list_id===l.id).length;
@@ -688,6 +896,7 @@ function renderSidebar() {
     </button>`;
   }).join('');
 
+  // tags
   // tags
   q('s-tags').innerHTML = !tags.length
     ? `<div style="padding:4px 16px;font-size:12px;color:var(--text3)">No tags</div>`
@@ -749,7 +958,7 @@ function renderTasks() {
   q('view-cnt').textContent = list.length+' task'+(list.length!==1?'s':'');
 
   if (!list.length) {
-    q('task-list').innerHTML = `<div class="empty"><div class="empty-ic">✅</div><h3>No tasks here</h3><p>Create a new task to get started</p></div>`;
+    q('task-list').innerHTML = `<div class="empty"><div class="empty-ic"><span class="ic" style="width:40px;height:40px"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></span></div><h3>No tasks here</h3><p>Create a new task to get started</p></div>`;
     return;
   }
 
@@ -764,21 +973,26 @@ function renderTasks() {
     const tgs   = (t.task_tags||[]).map(tt=>tt.tag).filter(Boolean);
     const cls   = ['card',done?'done':'',t.pinned?'pinned':'',over?'overdue':'',selIds.has(t.id)?'sel':''].filter(Boolean).join(' ');
     return `<div class="${cls}" data-p="${t.priority}" data-id="${t.id}"
-                 style="animation-delay:${i*20}ms" onclick="cardClick(event,'${t.id}')">
+                 style="animation-delay:${i*20}ms"
+                 onclick="cardClick(event,'${t.id}')"
+                 onpointerdown="onCardPointerDown(event,'${t.id}')"
+                 onpointerup="onCardPointerUp(event)"
+                 onpointercancel="onCardPointerCancel(event)">
+      <div class="card-check"></div>
       <div class="cb${done?' on':''}" onclick="event.stopPropagation();toggle('${t.id}','${t.status}')"></div>
       <div class="cbody">
         <div class="ctitle">${x(t.title)}</div>
         ${t.description?`<div class="cdesc">${x(t.description)}</div>`:''}
         <div class="cmeta">
           <span class="badge b-${t.priority}">${t.priority}</span>
-          ${t.due_date?`<span class="cdue">📅 ${rt(t.due_date)}</span>`:''}
+          ${t.due_date?`<span class="cdue"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> ${rt(t.due_date)}</span>`:''}
           ${subs.length?`<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--text3);cursor:pointer" onclick="event.stopPropagation();toggleSubsExpand('${t.id}')">
             <div class="pbar" style="width:44px"><div class="pfill${dSubs===subs.length?' g':''}" style="width:${Math.round(dSubs/subs.length*100)}%"></div></div>
             ${dSubs}/${subs.length} subtask${subs.length!==1?'s':''}</span>`:''}
           ${tgs.map(tg=>`<span class="badge" style="background:${tg.color}22;color:${tg.color};cursor:pointer" onclick="event.stopPropagation();filterTag('${tg.id}')">${x(tg.name)}</span>`).join('')}
-          ${t.pinned?`<span style="font-size:10px;color:var(--amber)">📌</span>`:''}
+          ${t.pinned?`<span style='color:var(--amber);display:inline-flex;align-items:center'><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24z"/></svg></span>`:''}
         </div>
-        ${subs.length?`<div id="subs-${t.id}" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:4px">
+        ${subs.length?`<div id="subs-${t.id}" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:4px">
           ${subs.sort((a,b)=>a.position-b.position).map(s=>`
             <div style="display:flex;align-items:center;gap:7px" onclick="event.stopPropagation()">
               <div class="cb${s.completed?' on':''}" style="width:14px;height:14px;border-radius:3px;flex-shrink:0"
@@ -788,9 +1002,9 @@ function renderTasks() {
         </div>`:''}
       </div>
       <div class="cactions">
-        <button class="icon-btn" onclick="event.stopPropagation();openModal('${t.id}')" title="Edit" style="font-size:13px">✏️</button>
-        <button class="icon-btn" onclick="event.stopPropagation();doPin('${t.id}',${t.pinned})" title="${t.pinned?'Unpin':'Pin'}" style="font-size:13px;${t.pinned?'color:var(--amber)':''}">📌</button>
-        <button class="icon-btn" onclick="event.stopPropagation();doDelete('${t.id}')" title="Delete" style="font-size:13px">🗑</button>
+        <button class="icon-btn" onclick="event.stopPropagation();openModal('${t.id}')" title="Edit"><span class="ic" style="width:15px;height:15px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></span></button>
+        <button class="icon-btn ${t.pinned?'pin-active':''}" onclick="event.stopPropagation();doPin('${t.id}',${t.pinned})" title="${t.pinned?'Unpin':'Pin'}"><span class="ic" style="width:15px;height:15px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24z"/></svg></span></button>
+        <button class="icon-btn" onclick="event.stopPropagation();doDelete('${t.id}')" title="Delete"><span class="ic" style="width:15px;height:15px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></span></button>
       </div>
     </div>`;
   }
@@ -800,7 +1014,7 @@ function renderTasks() {
   // Pinned section
   if (pinned_tasks.length) {
     html += `<div class="section-divider">
-      <span class="section-divider-ic">📌</span>
+      <span class="section-divider-ic"><span class="ic" style="width:11px;height:11px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24z"/></svg></span></span>
       <span class="section-divider-lbl">Pinned</span>
     </div>`;
     html += pinned_tasks.map((t,i) => renderCard(t,i)).join('');
@@ -818,9 +1032,57 @@ function renderTasks() {
 // ══════════════════════════════════════════════
 // TASK ACTIONS
 // ══════════════════════════════════════════════
+// ── Selection mode (exact match to test-bulk.html) ──
+let selMode = false;
+let _pressTimer = null;
+
+function enterSelMode() {
+  selMode = true;
+  document.body.classList.add('sel-mode');
+}
+
+function exitSelMode() {
+  selMode = false;
+  selIds.clear();
+  document.body.classList.remove('sel-mode');
+  updateBulk();
+  renderTasks();
+}
+
+function toggleSel(id) {
+  selIds.has(id) ? selIds.delete(id) : selIds.add(id);
+  if (selIds.size === 0) { selMode = false; document.body.classList.remove('sel-mode'); }
+  updateBulk();
+  renderTasks();
+}
+
 function cardClick(e, id) {
-  if (e.shiftKey) { selIds.has(id)?selIds.delete(id):selIds.add(id); updateBulk(); renderTasks(); return; }
+  if (e.shiftKey) { if (!selMode) enterSelMode(); toggleSel(id); return; }
+  if (selMode)    { toggleSel(id); return; }
   openModal(id);
+}
+
+function onCardPointerDown(e, id) {
+  if (e.pointerType === 'mouse') return;
+  const el = document.querySelector('[data-id="'+id+'"]');
+  if (el) el.classList.add('pressing');
+  _pressTimer = setTimeout(() => {
+    document.querySelectorAll('.pressing').forEach(el => el.classList.remove('pressing'));
+    if (navigator.vibrate) navigator.vibrate(40);
+    if (!selMode) enterSelMode();
+    toggleSel(id);
+    _pressTimer = null;
+  }, 500);
+}
+
+function onCardPointerUp(e) {
+  if (_pressTimer) { clearTimeout(_pressTimer); _pressTimer = null; }
+  document.querySelectorAll('.pressing').forEach(el => el.classList.remove('pressing'));
+}
+
+function onCardPointerCancel(e) {
+  if (_pressTimer) { clearTimeout(_pressTimer); _pressTimer = null; }
+  document.querySelectorAll('.pressing').forEach(el => el.classList.remove('pressing'));
 }
 
 async function toggle(id, cur) {
@@ -834,7 +1096,7 @@ async function doPin(id, cur) {
   tasks = tasks.map(t=>t.id===id?{...t,pinned:!cur}:t);
   renderTasks();
   await sb.from('tasks').update({pinned:!cur}).eq('id',id).eq('user_id',USER.id);
-  showToast(cur?'Unpinned':'Pinned 📌');
+  showToast(cur?'Unpinned':'Pinned');
 }
 
 async function doDelete(id) {
@@ -847,28 +1109,102 @@ async function doDelete(id) {
 
 function updateBulk() {
   const n = selIds.size;
-  q('bulk-bar').classList.toggle('hidden',n===0);
-  q('bulk-cnt').textContent = n+' selected';
+  document.getElementById('bulk-bar').classList.toggle('hidden', n===0);
+  if (n > 0) q('bulk-cnt').textContent = n + ' task' + (n===1?'':'s') + ' selected';
+  renderBulkListDD();
 }
 
-function clearSel() { selIds.clear(); updateBulk(); renderTasks(); }
+function clearSel() { exitSelMode(); }
 
+function selectAll() {
+  if (!selMode) enterSelMode();
+  getVisible().forEach(t => selIds.add(t.id));
+  updateBulk();
+  renderTasks();
+}
+
+// ── Bulk complete ──
 async function bulkDone() {
   const ids = [...selIds];
-  await Promise.all(ids.map(id=>sb.from('tasks').update({status:'completed'}).eq('id',id).eq('user_id',USER.id)));
+  await Promise.all(ids.map(id => sb.from('tasks').update({status:'completed'}).eq('id',id).eq('user_id',USER.id)));
   tasks = await loadTasks();
   selIds.clear(); updateBulk(); renderTasks(); updateCounts();
-  showToast(ids.length+' tasks completed ✅');
+  showToast(ids.length + ' tasks marked complete');
 }
 
-async function bulkDel() {
+// ── Bulk reopen ──
+async function bulkReopen() {
   const ids = [...selIds];
-  if (!confirm('Delete '+ids.length+' tasks?')) return;
-  await sb.from('tasks').delete().in('id',ids).eq('user_id',USER.id);
+  await Promise.all(ids.map(id => sb.from('tasks').update({status:'todo'}).eq('id',id).eq('user_id',USER.id)));
   tasks = await loadTasks();
   selIds.clear(); updateBulk(); renderTasks(); updateCounts();
-  showToast(ids.length+' deleted');
+  showToast(ids.length + ' tasks reopened');
 }
+
+// ── Bulk set priority ──
+function closeAllBulkDD() {
+  q('bulk-priority-dd')?.classList.remove('open');
+  q('bulk-list-dd')?.classList.remove('open');
+}
+function toggleBulkPriorityDD() {
+  const dd = q('bulk-priority-dd');
+  const wasOpen = dd.classList.contains('open');
+  closeAllBulkDD();
+  if (!wasOpen) dd.classList.add('open');
+}
+async function bulkSetPriority(priority) {
+  const ids = [...selIds];
+  await Promise.all(ids.map(id => sb.from('tasks').update({priority}).eq('id',id).eq('user_id',USER.id)));
+  q('bulk-priority-dd').classList.remove('open');
+  tasks = await loadTasks();
+  renderTasks(); updateCounts();
+  showToast(ids.length + ' tasks set to ' + priority + ' priority');
+}
+
+// ── Bulk move to list ──
+function renderBulkListDD() {
+  const dd = q('bulk-list-dd');
+  if (!dd) return;
+  const noListBtn = `<button onclick="bulkMoveToList(null)">
+    <span class="bulk-list-dot" style="background:var(--border2)"></span> No list
+  </button>`;
+  const listBtns = lists.map(l => `<button onclick="bulkMoveToList('${l.id}')">
+    <span class="bulk-list-dot" style="background:${l.color}"></span> ${l.name}
+  </button>`).join('');
+  dd.innerHTML = noListBtn + listBtns;
+}
+function toggleBulkListDD() {
+  const dd = q('bulk-list-dd');
+  const wasOpen = dd.classList.contains('open');
+  closeAllBulkDD();
+  if (!wasOpen) dd.classList.add('open');
+}
+async function bulkMoveToList(listId) {
+  const ids = [...selIds];
+  await Promise.all(ids.map(id => sb.from('tasks').update({list_id: listId}).eq('id',id).eq('user_id',USER.id)));
+  q('bulk-list-dd').classList.remove('open');
+  tasks = await loadTasks();
+  selIds.clear(); updateBulk(); renderTasks(); updateCounts();
+  const listName = listId ? (lists.find(l=>l.id===listId)?.name||'list') : 'No list';
+  showToast(ids.length + ' tasks moved to ' + listName);
+}
+
+// ── Bulk delete ──
+async function bulkDel() {
+  const ids = [...selIds];
+  if (!confirm('Delete ' + ids.length + ' task' + (ids.length===1?'':'s') + '? This cannot be undone.')) return;
+  await sb.from('tasks').delete().in('id', ids).eq('user_id', USER.id);
+  tasks = await loadTasks();
+  selIds.clear(); updateBulk(); renderTasks(); updateCounts();
+  showToast(ids.length + ' tasks deleted');
+}
+
+// Close bulk dropdowns when clicking outside
+document.addEventListener('click', e => {
+  if (!e.target.closest('#bulk-priority-wrap') && !e.target.closest('#bulk-list-wrap')) {
+    closeAllBulkDD?.();
+  }
+});
 
 // ══════════════════════════════════════════════
 // MODAL
@@ -929,7 +1265,7 @@ function fillTags() {
     c.innerHTML = `<button type="button" onclick="closeModal();openTagManager()"
       style="font-size:12px;color:var(--accent);background:var(--accent-light);border:1px dashed var(--accent);
              border-radius:99px;padding:3px 10px;cursor:pointer;font-family:inherit">
-      ＋ Create your first tag
+      <span class="ic" style="width:12px;height:12px;display:inline-flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span> Create your first tag
     </button>`;
     return;
   }
@@ -948,7 +1284,7 @@ function fillTags() {
            border-radius:99px;padding:3px 8px;cursor:pointer;font-family:inherit;transition:all .15s"
     onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'"
     onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text3)'">
-    ＋ new tag
+    <span class="ic" style="width:11px;height:11px;display:inline-flex;align-items:center;justify-content:center"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span> new tag
   </button>`;
 }
 
@@ -967,7 +1303,7 @@ function addStRow(s) {
   row.className='st-row';
   row.innerHTML=`<div class="cb${s?.completed?' on':''}" onclick="this.classList.toggle('on')"></div>
     <input class="inp" type="text" placeholder="Subtask…" value="${x(s?.title||'')}"/>
-    <button type="button" class="icon-btn" style="font-size:12px" onclick="this.parentElement.remove()">✕</button>`;
+    <button type="button" class="icon-btn" onclick="this.parentElement.remove()"><span class="ic" style="width:13px;height:13px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></button>`;
   q('f-subs').appendChild(row);
 }
 
@@ -975,7 +1311,9 @@ function togglePin() { pinned=!pinned; updPin(); }
 function updPin() {
   const b=q('pin-btn');
   b.style.color=pinned?'var(--amber)':'';
-  b.textContent=pinned?'📌 Pinned':'📌 Pin';
+  b.innerHTML=pinned
+    ? `<span class="ic" style="width:13px;height:13px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24z"/></svg></span> Pinned`
+    : '<span class="ic" style="width:13px;height:13px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24z"/></svg></span> Pin';
 }
 
 // ── THE SAVE FUNCTION ─────────────────────────────────────────
@@ -1007,7 +1345,6 @@ async function saveTask() {
     pinned,
   };
 
-  console.log('Saving with user_id:', USER.id);
 
   let taskId = editId;
 
@@ -1073,8 +1410,10 @@ async function saveTask() {
 // ══════════════════════════════════════════════
 function nav(v) {
   mobileNavClose();
-  view=v; activeList=null; filters={search:'',status:'',priority:''};
+  view=v; activeList=null; filters={search:'',status:'',priority:'',tagId:null};
   document.querySelectorAll('.s-item[id^=n-]').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('#s-tags .s-item').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('#s-lists .s-item').forEach(b=>b.classList.remove('on'));
   const el=document.getElementById('n-'+v); if(el) el.classList.add('on');
   const titles={all:'All Tasks',today:'Today',upcoming:'Upcoming',overdue:'Overdue',analytics:'Analytics'};
   q('view-title').textContent=titles[v]||'Tasks';
@@ -1085,7 +1424,7 @@ function nav(v) {
 
 function setList(id) {
   mobileNavClose();
-  activeList=id; view='all'; filters={search:'',status:'',priority:''};
+  activeList=id; view='all'; filters={search:'',status:'',priority:'',tagId:null};
   document.querySelectorAll('.s-item').forEach(b=>b.classList.remove('on'));
   document.querySelector(`[onclick="setList('${id}')"]`)?.classList.add('on');
   const l=lists.find(l=>l.id===id);
@@ -1096,14 +1435,16 @@ function setList(id) {
 function filterTag(id) {
   filters.tagId = filters.tagId === id ? null : id;
   // Update sidebar active states
+  // Update sidebar tag active states
   document.querySelectorAll('#s-tags .s-item').forEach(b => {
-    const onclick = b.getAttribute('onclick');
-    b.classList.toggle('on', filters.tagId && onclick && onclick.includes(id) && filters.tagId === id);
+    const oc = b.getAttribute('onclick') || '';
+    const btnId = oc.match(/filterTag\('([^']+)'\)/)?.[1];
+    b.classList.toggle('on', btnId && btnId === filters.tagId);
   });
   // Update view title
   if (filters.tagId) {
     const tag = tags.find(t=>t.id===id);
-    q('view-title').textContent = tag ? '🏷️ ' + tag.name : 'Tagged';
+    q('view-title').textContent = tag ? tag.name : 'Tagged';
   } else {
     q('view-title').textContent = 'All Tasks';
   }
@@ -1123,9 +1464,11 @@ function setFilter(type,val) {
 }
 
 function clearFilters() {
-  filters={search:'',status:'',priority:''};
+  filters={search:'',status:'',priority:'',tagId:null};
   document.querySelectorAll('.fc').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('#s-tags .s-item').forEach(b=>b.classList.remove('on'));
   q('s-inp').value='';
+  q('view-title').textContent = view==='all'?'All Tasks':view.charAt(0).toUpperCase()+view.slice(1);
   renderTasks();
 }
 
@@ -1139,7 +1482,7 @@ async function addList() {
   const colors=['#6366f1','#f59e0b','#10b981','#3b82f6','#ef4444','#8b5cf6'];
   const color=colors[Math.floor(Math.random()*colors.length)];
   const { data,error } = await sb.from('lists')
-    .insert({user_id:USER.id,name:name.trim(),color,icon:'📋'})
+    .insert({user_id:USER.id,name:name.trim(),color})
     .select().single();
   if (error) { showToast('Failed: '+error.message,'err'); return; }
   lists.push(data); renderSidebar(); showToast('"'+name+'" created');
@@ -1162,10 +1505,10 @@ async function renderAnalytics() {
   q('task-list').innerHTML=`
     <div style="max-width:660px">
       <div class="stat-grid">
-        <div class="stat-card"><div style="font-size:20px;margin-bottom:6px">📋</div><div class="stat-val" style="color:var(--accent)">${total}</div><div class="stat-lbl">Total</div></div>
-        <div class="stat-card"><div style="font-size:20px;margin-bottom:6px">✅</div><div class="stat-val" style="color:var(--green)">${done}</div><div class="stat-lbl">Completed</div></div>
+        <div class="stat-card"><div style="margin-bottom:6px;display:flex;justify-content:center"><span class="ic" style="width:22px;height:22px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><polyline points="3 6 4 7 6 5"/><polyline points="3 12 4 13 6 11"/><polyline points="3 18 4 19 6 17"/></svg></span></div><div class="stat-val" style="color:var(--accent)">${total}</div><div class="stat-lbl">Total</div></div>
+        <div class="stat-card"><div style="margin-bottom:6px;display:flex;justify-content:center;color:var(--green)"><span class="ic" style="width:22px;height:22px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></span></div><div class="stat-val" style="color:var(--green)">${done}</div><div class="stat-lbl">Completed</div></div>
         <div class="stat-card"><div style="font-size:20px;margin-bottom:6px">🔄</div><div class="stat-val" style="color:var(--blue)">${inprog}</div><div class="stat-lbl">In Progress</div></div>
-        <div class="stat-card"><div style="font-size:20px;margin-bottom:6px">🔴</div><div class="stat-val" style="color:var(--red)">${over}</div><div class="stat-lbl">Overdue</div></div>
+        <div class="stat-card"><div style="margin-bottom:6px;display:flex;justify-content:center;color:var(--red)"><span class="ic" style="width:22px;height:22px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span></div><div class="stat-val" style="color:var(--red)">${over}</div><div class="stat-lbl">Overdue</div></div>
       </div>
       <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);padding:16px;margin-bottom:12px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
@@ -1200,7 +1543,12 @@ function toggleTheme() {
   const t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
   document.documentElement.setAttribute('data-theme',t);
   localStorage.setItem('pu-theme',t);
-  showToast(t==='dark'?'🌙 Dark mode':'☀️ Light mode');
+  // update theme icon buttons
+  const _themeIcon = document.getElementById('theme-icon-btn');
+  const _themeDDIcon = document.getElementById('theme-dd-btn');
+  if (_themeIcon) _themeIcon.querySelector('svg')?.setAttribute('data-mode', t);
+  if (_themeDDIcon) _themeDDIcon.querySelector('svg')?.setAttribute('data-mode', t);
+  showToast(t==='dark'?'Dark mode':'Light mode');
 }
 
 function toggleDD() {
@@ -1292,15 +1640,16 @@ function setSort(mode) {
   sortMode = mode;
   document.getElementById('sort-menu').style.display = 'none';
   // Update button label
-  const labels = {default:'⇅',priority:'🔴',due:'📅',alpha:'🔤',created:'🕐'};
-  document.getElementById('sort-btn').childNodes[0].textContent = labels[mode]||'⇅';
+  // sort label stored in data-sort attribute, no emoji needed
+  // update sort button icon safely
+  const sb = document.getElementById('sort-btn');
+  sb.dataset.sort = mode;
+  sb.title = 'Sort: ' + mode;
   renderTasks();
   showToast('Sorted by ' + mode);
 }
 
-// Hook into getVisible to apply sort AFTER pinned float
-const _origGetVisible = getVisible;
-// Override sort in renderTasks — applied inside renderTasks after getVisible
+// Sort applied inside getVisible via applySortMode()
 
 document.addEventListener('click', e => {
   if (!e.target.closest('#sort-btn')) {
@@ -1316,19 +1665,19 @@ let cmdIdx = -1;
 let cmdItems = [];
 
 const CMD_ACTIONS = [
-  { ic:'＋', lbl:'New Task',          sub:'Create a new task',         action: ()=>openModal(null) },
-  { ic:'☀️', lbl:'Today',             sub:'View today tasks',        action: ()=>nav('today') },
-  { ic:'📋', lbl:'All Tasks',         sub:'View all tasks',             action: ()=>nav('all') },
-  { ic:'🔴', lbl:'Overdue',           sub:'View overdue tasks',         action: ()=>nav('overdue') },
-  { ic:'📅', lbl:'Upcoming',          sub:'View upcoming tasks',        action: ()=>nav('upcoming') },
-  { ic:'📊', lbl:'Analytics',         sub:'Open analytics',             action: ()=>nav('analytics') },
-  { ic:'🎯', lbl:'Focus Mode',        sub:'Hide distractions',          action: ()=>toggleFocus() },
-  { ic:'⚡', lbl:'Quick Capture',     sub:'Fast task entry (Q)',        action: ()=>openQuickCapture() },
-  { ic:'🌙', lbl:'Toggle Theme',      sub:'Switch dark/light mode',     action: ()=>toggleTheme() },
-  { ic:'🔤', lbl:'Sort A→Z',          sub:'Sort tasks alphabetically',  action: ()=>setSort('alpha') },
-  { ic:'🔴', lbl:'Sort by Priority',  sub:'High priority first',        action: ()=>setSort('priority') },
-  { ic:'📅', lbl:'Sort by Due Date',  sub:'Earliest due date first',    action: ()=>setSort('due') },
-  { ic:'↪',  lbl:'Sign Out',          sub:'Sign out of PlanUp',         action: ()=>signOut() },
+  { ic:'plus', lbl:'New Task',          sub:"Create a new task",         action: ()=>openModal(null) },
+  { ic:'sun', lbl:'Today',             sub:"View today's tasks",        action: ()=>nav('today') },
+  { ic:'layout-list', lbl:'All Tasks',         sub:"View all tasks",             action: ()=>nav('all') },
+  { ic:'alert-circle', lbl:'Overdue',           sub:"View overdue tasks",         action: ()=>nav('overdue') },
+  { ic:'calendar', lbl:'Upcoming',          sub:"View upcoming tasks",        action: ()=>nav('upcoming') },
+  { ic:'bar-chart-2', lbl:'Analytics',         sub:"Open analytics",             action: ()=>nav('analytics') },
+  { ic:'focus', lbl:'Focus Mode',        sub:"Hide distractions",          action: ()=>toggleFocus() },
+  { ic:'zap', lbl:'Quick Capture',     sub:"Fast task entry (Q)",        action: ()=>openQuickCapture() },
+  { ic:'moon', lbl:'Toggle Theme',      sub:"Switch dark/light mode",     action: ()=>toggleTheme() },
+  { ic:'a-large-small', lbl:'Sort A→Z',          sub:"Sort tasks alphabetically",  action: ()=>setSort('alpha') },
+  { ic:'flame', lbl:'Sort by Priority',  sub:"High priority first",        action: ()=>setSort('priority') },
+  { ic:'calendar-clock', lbl:'Sort by Due Date',  sub:"Earliest due date first",    action: ()=>setSort('due') },
+  { ic:'log-out', lbl:'Sign Out',          sub:"Sign out of PlanUp",         action: ()=>signOut() },
 ];
 
 function openCmd() {
@@ -1363,7 +1712,7 @@ function cmdSearch(val) {
     : [];
 
   cmdItems = [...matchedActions, ...matchedTasks.map(t => ({
-    ic: t.status==='completed' ? '✅' : t.pinned ? '📌' : '📋',
+    ic: t.status==='completed' ? 'check-circle-2' : t.pinned ? 'pin' : 'file-text',
     lbl: t.title,
     sub: t.status + (t.due_date ? ' · ' + rt(t.due_date) : ''),
     action: () => openModal(t.id),
@@ -1380,7 +1729,7 @@ function cmdSearch(val) {
     html += `<div class="cmd-section">Actions</div>`;
     html += matchedActions.map((a,i) =>
       `<div class="cmd-item" data-idx="${i}" onclick="cmdRun(${i})">
-        <span class="cmd-ic">${a.ic}</span>
+        <span class="cmd-ic ic" style="width:16px;height:16px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/></svg></span>
         <span class="cmd-lbl">${a.lbl}</span>
         <span class="cmd-sub">${a.sub}</span>
       </div>`).join('');
@@ -1390,7 +1739,7 @@ function cmdSearch(val) {
     html += matchedTasks.map((t,i) => {
       const idx = matchedActions.length + i;
       return `<div class="cmd-item" data-idx="${idx}" onclick="cmdRun(${idx})">
-        <span class="cmd-ic">${t.status==='completed'?'✅':t.pinned?'📌':'📋'}</span>
+        <span class="cmd-ic ic" style="width:16px;height:16px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/></svg></span>
         <span class="cmd-lbl">${x(t.title)}</span>
         <span class="cmd-sub">${t.status}${t.due_date?' · '+rt(t.due_date):''}</span>
       </div>`;
@@ -1434,7 +1783,7 @@ let focusMode = false;
 function toggleFocus() {
   focusMode = !focusMode;
   document.body.classList.toggle('focus-mode', focusMode);
-  showToast(focusMode ? '🎯 Focus mode on — distractions hidden' : '🎯 Focus mode off');
+  showToast(focusMode ? 'Focus mode on' : 'Focus mode off');
 }
 
 // ══════════════════════════════════════════════
@@ -1468,7 +1817,7 @@ async function qcKey(e) {
   if (error) { showToast('Quick capture failed','err'); return; }
   tasks = await loadTasks();
   renderTasks(); updateCounts(); renderSidebar();
-  showToast('⚡ "' + title + '" captured!');
+  showToast('"' + title + '" captured');
 }
 
 // ══════════════════════════════════════════════
@@ -1515,8 +1864,7 @@ document.addEventListener('keydown', e => {
 });
 
 // ── Patch renderTasks to apply custom sort ────────────────────
-const _baseRenderTasks = renderTasks;
-// We already handle sort inside getVisible — extend it here
+// Sort mode logic below:
 function applySortMode(list) {
   const pinned_list  = list.filter(t => t.pinned);
   const unpinned = list.filter(t => !t.pinned);
@@ -1545,8 +1893,8 @@ function applySortMode(list) {
 const expandedSubs = new Set();
 
 function toggleSubsExpand(taskId) {
-  // subtasks are always visible now (rendered inline)
-  // this function left for future collapse toggle
+  // Subtasks are rendered inline and always visible
+  // This handler intentionally left as no-op
 }
 
 // ══════════════════════════════════════════════
@@ -1580,7 +1928,7 @@ function renderTagManagerList() {
         style="width:28px;height:28px;padding:1px;border:1px solid var(--border);border-radius:5px;cursor:pointer;background:var(--bg)"
         onchange="updateTagColor('${tag.id}', this.value)"/>
       <span style="font-size:11px;color:var(--text3);white-space:nowrap">${taskCount} task${taskCount!==1?'s':''}</span>
-      <button class="icon-btn" onclick="deleteTag('${tag.id}')" style="font-size:12px;color:var(--text3);flex-shrink:0" title="Delete tag">🗑</button>
+      <button class="icon-btn" onclick="deleteTag('${tag.id}')" style="flex-shrink:0;color:var(--text3)" title="Delete tag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>
     </div>`;
   }).join('');
 }
@@ -1601,7 +1949,7 @@ async function createTag() {
   q('new-tag-name').value = '';
   renderTagManagerList();
   renderSidebar();
-  showToast('🏷️ Tag "' + name + '" created');
+  showToast('Tag "' + name + '" created');
 }
 
 async function updateTagName(id, name) {
@@ -1650,6 +1998,10 @@ async function toggleSubtask(taskId, subtaskId, current) {
 
 // ── GO ───────────────────────────────────────
 boot().catch(e=>{ console.error(e); showToast('Boot failed — check console','err'); });
+
+// ── Init Lucide icons ─────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+});
 </script>
 </body>
 </html>

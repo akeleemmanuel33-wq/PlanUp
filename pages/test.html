@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Bulk Select Test</title>
+<style>
+:root{--accent:#6366f1;--accent-light:rgba(99,102,241,.12);--bg:#111827;--bg2:#1f2937;--bg3:#374151;--border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.14);--text:#f9fafb;--text2:#9ca3af;--text3:#6b7280;--red:#ef4444;--amber:#f59e0b;--green:#10b981;--r:8px;--r2:12px;--sh3:0 20px 40px rgba(0,0,0,.4)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:var(--bg);color:var(--text);padding:20px;max-width:700px;margin:0 auto;-webkit-font-smoothing:antialiased}
+h3{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:12px}
+
+/* ── BULK BAR ── */
+#bulk-bar{
+  display:flex;align-items:center;gap:6px;padding:10px 14px;
+  background:var(--bg2);border:1px solid var(--accent);
+  border-radius:var(--r2);margin-bottom:14px;flex-wrap:wrap;
+  box-shadow:0 0 0 3px rgba(99,102,241,.12);
+}
+#bulk-bar.hidden{display:none!important}
+.bulk-cnt{font-size:13px;font-weight:600;color:var(--accent);flex:1;min-width:80px}
+.bulk-sep{width:1px;height:20px;background:var(--border2);flex-shrink:0}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:0 12px;height:32px;border-radius:var(--r);border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-family:inherit;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap;transition:all .15s}
+.btn:hover{background:var(--border2);color:#fff}
+.btn-danger{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.3);color:#f87171}
+.btn-danger:hover{background:rgba(239,68,68,.25)}
+
+/* ── DROPDOWNS ── */
+.dd-wrap{position:relative}
+.dd-menu{position:absolute;top:calc(100% + 6px);left:0;z-index:100;background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);padding:4px;min-width:150px;box-shadow:var(--sh3);display:none;flex-direction:column;gap:2px}
+.dd-menu.open{display:flex}
+.dd-menu button{display:flex;align-items:center;gap:8px;padding:8px 10px;background:none;border:none;border-radius:var(--r);font-family:inherit;font-size:13px;color:var(--text);cursor:pointer;text-align:left;width:100%}
+.dd-menu button:hover{background:var(--bg3)}
+.dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+
+/* ── CARDS ── */
+.cards{display:flex;flex-direction:column;gap:8px}
+.card{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 14px;background:var(--bg2);
+  border:1px solid var(--border);border-radius:var(--r2);
+  cursor:pointer;transition:all .15s;position:relative;
+  user-select:none;-webkit-user-select:none;
+}
+.card:hover{border-color:var(--border2)}
+.card.sel{background:rgba(99,102,241,.1);border-color:var(--accent)}
+
+/* Normal mode: show real checkbox */
+.card-check{
+  width:17px;height:17px;border-radius:5px;
+  border:2px solid var(--border2);flex-shrink:0;
+  transition:all .15s;background:var(--bg);
+}
+/* Sel mode: the card-check becomes accent filled with tick */
+body.sel-mode .card.sel .card-check{
+  background:var(--accent);border-color:var(--accent);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:center;
+}
+/* Non-sel mode: hide checkbox */
+body:not(.sel-mode) .card-check{display:none}
+
+.card-title{font-size:14px;font-weight:500;flex:1}
+.card-badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px}
+.bh{background:rgba(239,68,68,.15);color:#f87171}
+.bm{background:rgba(245,158,11,.15);color:#fbbf24}
+.bl{background:rgba(16,185,129,.15);color:#34d399}
+
+/* Long press feedback */
+.card.pressing{background:rgba(99,102,241,.07)}
+@keyframes pressAnim{0%{opacity:0}60%{opacity:1}100%{opacity:0}}
+
+/* Sel mode badge */
+#sel-badge{
+  display:none;
+  background:var(--accent);color:#fff;
+  font-size:11px;font-weight:600;
+  padding:5px 14px;border-radius:99px;
+  margin-bottom:12px;text-align:center;
+  animation:fadeIn .2s ease;
+}
+body.sel-mode #sel-badge{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+/* Hint */
+.hint{font-size:12px;color:var(--text3);margin-bottom:16px;padding:10px 12px;background:var(--bg2);border-radius:var(--r);border:1px solid var(--border)}
+</style>
+</head>
+<body>
+
+<div id="sel-badge">✓ Selection mode — tap cards to select</div>
+
+<div class="hint">
+  <strong style="color:var(--text2)">Desktop:</strong> Shift+click any card &nbsp;·&nbsp;
+  <strong style="color:var(--text2)">Mobile:</strong> Hold card 0.5s to start selecting
+</div>
+
+<!-- BULK BAR -->
+<div id="bulk-bar" class="hidden">
+  <span class="bulk-cnt" id="bulk-cnt">0 selected</span>
+  <div class="bulk-sep"></div>
+
+  <button class="btn" onclick="bulkDone()">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+    Complete
+  </button>
+
+  <button class="btn" onclick="bulkReopen()">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+    Reopen
+  </button>
+
+  <div class="bulk-sep"></div>
+
+  <div class="dd-wrap">
+    <button class="btn" onclick="toggleDD('priority-dd')">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+      Priority
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="dd-menu" id="priority-dd">
+      <button onclick="bulkPriority('high')">  <span class="dot" style="background:#ef4444"></span> High</button>
+      <button onclick="bulkPriority('medium')"><span class="dot" style="background:#f59e0b"></span> Medium</button>
+      <button onclick="bulkPriority('low')">   <span class="dot" style="background:#10b981"></span> Low</button>
+      <button onclick="bulkPriority('none')">  <span class="dot" style="background:var(--border2)"></span> None</button>
+    </div>
+  </div>
+
+  <div class="dd-wrap">
+    <button class="btn" onclick="toggleDD('list-dd')">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+      Move to
+      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="dd-menu" id="list-dd">
+      <button onclick="bulkMove('Personal')"><span class="dot" style="background:#6366f1"></span> Personal</button>
+      <button onclick="bulkMove('Work')">    <span class="dot" style="background:#f59e0b"></span> Work</button>
+      <button onclick="bulkMove('School')">  <span class="dot" style="background:#10b981"></span> School</button>
+    </div>
+  </div>
+
+  <div class="bulk-sep"></div>
+
+  <button class="btn btn-danger" onclick="bulkDelete()">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+    Delete
+  </button>
+
+  <button class="btn" onclick="selectAll()" style="margin-left:auto">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg>
+    All
+  </button>
+
+  <button class="btn" onclick="clearSel()">
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    None
+  </button>
+</div>
+
+<!-- TASK CARDS -->
+<h3>Tasks</h3>
+<div class="cards" id="cards"></div>
+
+<div id="toast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--bg2);border:1px solid var(--border2);border-radius:99px;padding:10px 20px;font-size:13px;box-shadow:var(--sh3);display:none;z-index:999;white-space:nowrap"></div>
+
+<script>
+const TASKS = [
+  {id:'1',title:'Finalize Q2 report',    priority:'high',   status:'todo'},
+  {id:'2',title:'Schedule team meeting', priority:'medium', status:'todo'},
+  {id:'3',title:'Update portfolio site', priority:'low',    status:'todo'},
+  {id:'4',title:'Review PRs',            priority:'high',   status:'completed'},
+  {id:'5',title:'Grocery shopping',      priority:'none',   status:'todo'},
+  {id:'6',title:'Read design book',      priority:'low',    status:'todo'},
+];
+
+let tasks = TASKS.map(t=>({...t}));
+let selIds = new Set();
+let selMode = false;
+let pressTimer = null;
+
+// ── RENDER ──
+function render() {
+  document.getElementById('cards').innerHTML = tasks.map(t => `
+    <div class="card${selIds.has(t.id)?' sel':''}" id="c-${t.id}"
+         onclick="cardClick(event,'${t.id}')"
+         onpointerdown="pointerDown(event,'${t.id}')"
+         onpointerup="pointerUp(event)"
+         onpointercancel="pointerUp(event)">
+      <div class="card-check"></div>
+      <span class="card-title" style="${t.status==='completed'?'text-decoration:line-through;opacity:.45':''}">${t.title}</span>
+      <span class="card-badge b${t.priority[0]}">${t.priority}</span>
+    </div>
+  `).join('');
+}
+
+// ── SELECTION ──
+function enterSelMode() {
+  selMode = true;
+  document.body.classList.add('sel-mode');
+}
+function exitSelMode() {
+  selMode = false;
+  selIds.clear();
+  document.body.classList.remove('sel-mode');
+  updateBulk();
+  render();
+}
+function toggleSel(id) {
+  selIds.has(id) ? selIds.delete(id) : selIds.add(id);
+  if (selIds.size === 0) { selMode = false; document.body.classList.remove('sel-mode'); }
+  updateBulk(); render();
+}
+function selectAll() {
+  tasks.forEach(t => selIds.add(t.id));
+  updateBulk(); render();
+}
+function clearSel() { exitSelMode(); }
+
+function updateBulk() {
+  const n = selIds.size;
+  document.getElementById('bulk-bar').classList.toggle('hidden', n===0);
+  document.getElementById('bulk-cnt').textContent = n + ' task' + (n===1?'':'s') + ' selected';
+}
+
+// ── CARD CLICK ──
+function cardClick(e, id) {
+  if (e.shiftKey) { if(!selMode) enterSelMode(); toggleSel(id); return; }
+  if (selMode) { toggleSel(id); return; }
+  toast('Opened: ' + tasks.find(t=>t.id===id).title);
+}
+
+// ── LONG PRESS ──
+function pointerDown(e, id) {
+  if (e.pointerType === 'mouse') return;
+  const el = document.getElementById('c-'+id);
+  el.classList.add('pressing');
+  pressTimer = setTimeout(() => {
+    el.classList.remove('pressing');
+    if (navigator.vibrate) navigator.vibrate(40);
+    if (!selMode) enterSelMode();
+    toggleSel(id);
+    pressTimer = null;
+  }, 500);
+}
+function pointerUp(e) {
+  if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+  document.querySelectorAll('.pressing').forEach(el => el.classList.remove('pressing'));
+}
+
+// ── BULK ACTIONS ──
+function bulkDone() {
+  selIds.forEach(id => { const t=tasks.find(t=>t.id===id); if(t) t.status='completed'; });
+  toast(selIds.size + ' tasks completed'); exitSelMode();
+}
+function bulkReopen() {
+  selIds.forEach(id => { const t=tasks.find(t=>t.id===id); if(t) t.status='todo'; });
+  toast(selIds.size + ' tasks reopened'); exitSelMode();
+}
+function bulkPriority(p) {
+  selIds.forEach(id => { const t=tasks.find(t=>t.id===id); if(t) t.priority=p; });
+  closeAllDD(); toast(selIds.size + ' tasks → '+p+' priority'); exitSelMode();
+}
+function bulkMove(list) {
+  closeAllDD(); toast(selIds.size + ' tasks → '+list); exitSelMode();
+}
+function bulkDelete() {
+  if (!confirm('Delete '+selIds.size+' tasks?')) return;
+  tasks = tasks.filter(t => !selIds.has(t.id));
+  toast('Deleted'); exitSelMode();
+}
+
+// ── DROPDOWNS ──
+function toggleDD(id) {
+  const el = document.getElementById(id);
+  const wasOpen = el.classList.contains('open');
+  closeAllDD();
+  if (!wasOpen) el.classList.add('open');
+}
+function closeAllDD() {
+  document.querySelectorAll('.dd-menu').forEach(el => el.classList.remove('open'));
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.dd-wrap')) closeAllDD();
+});
+
+// ── TOAST ──
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.style.display='block';
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.style.display='none', 2500);
+}
+
+render();
+</script>
+</body>
+</html>
