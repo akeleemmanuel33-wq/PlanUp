@@ -210,10 +210,10 @@ input::placeholder{color:var(--text3)}
   </a>
 </div>
 
-<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
 const sb = supabase.createClient(
-  'https://ilsbnkwcqxiijiyrljfi.supabase.co',
+  'https://ilsbnkwcqxiijiyrlifi.supabase.co',
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlsc2Jua3djcXhpaWppeXJsamZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MDQzMTcsImV4cCI6MjA4Nzk4MDMxN30.trrsgMaSG7hgq-rpzcUJyqffR8AjOvyfdaSEoeRj_a4',
   { auth:{ storage:window.localStorage,storageKey:'planup-auth',autoRefreshToken:true,persistSession:true,detectSessionInUrl:true } }
 );
@@ -258,19 +258,7 @@ if (urlEmail) {
 }
 
 /* ── AUTH CHECK ── */
-// Check connectivity + session on load
-(async () => {
-  try {
-    const { data:{ session }, error } = await sb.auth.getSession();
-    if (error) throw error;
-    if (session) goApp();
-  } catch(e) {
-    // Only show error if it's a real network failure (not just no session)
-    if (e.message && (e.message.includes('fetch') || e.message.includes('network') || e.message.includes('Failed'))) {
-      showErr('Cannot reach the server. Your Supabase project may be paused — visit supabase.com/dashboard to restore it.');
-    }
-  }
-})();
+sb.auth.getSession().then(({ data:{ session } }) => { if (session) goApp(); });
 
 /* ── FORM LOGIC ── */
 let mode = 'in';
@@ -298,49 +286,31 @@ async function doSubmit() {
   const btn = document.getElementById('submit-btn');
   btn.disabled = true;
   btn.textContent = mode==='in' ? 'Signing in…' : 'Creating account…';
-  try {
-    if (mode==='up') {
-      const { error } = await sb.auth.signUp({ email, password:pass, options:{ data:{ full_name:name } } });
-      btn.disabled=false; btn.textContent='Create account';
-      if (error) return showErr(error.message);
-      showOk('Account created! Check your email to confirm, then sign in.');
-      switchTab('in');
-    } else {
-      const { error } = await sb.auth.signInWithPassword({ email, password:pass });
-      btn.disabled=false; btn.textContent='Sign in';
-      if (error) return showErr(error.message);
-      goApp();
-    }
-  } catch(e) {
-    btn.disabled=false;
-    btn.textContent = mode==='in' ? 'Sign in' : 'Create account';
-    if (e.message && e.message.includes('fetch')) {
-      showErr('Network error — check your internet connection and try again.');
-    } else {
-      showErr(e.message || 'Something went wrong. Please try again.');
-    }
+  if (mode==='up') {
+    const { error } = await sb.auth.signUp({ email, password:pass, options:{ data:{ full_name:name } } });
+    btn.disabled=false; btn.textContent='Create account';
+    if (error) return showErr(error.message);
+    showOk('Account created! Check your email to confirm, then sign in.');
+    switchTab('in');
+  } else {
+    const { error } = await sb.auth.signInWithPassword({ email, password:pass });
+    btn.disabled=false; btn.textContent='Sign in';
+    if (error) return showErr(error.message);
+    goApp();
   }
 }
 
 async function doGoogle() {
-  try {
-    const { error } = await sb.auth.signInWithOAuth({ provider:'google', options:{ redirectTo: location.origin+'/pages/app.html' } });
-    if (error) showErr(error.message);
-  } catch(e) {
-    showErr('Network error — check your internet connection.');
-  }
+  const { error } = await sb.auth.signInWithOAuth({ provider:'google', options:{ redirectTo: location.origin+'/pages/app.html' } });
+  if (error) showErr(error.message);
 }
 
 async function forgotPw() {
   const email = document.getElementById('f-email').value.trim();
   if (!email) { showErr('Enter your email first'); return; }
-  try {
-    const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin+'/pages/auth.html' });
-    if (error) showErr(error.message);
-    else showOk('Password reset email sent! Check your inbox.');
-  } catch(e) {
-    showErr('Network error — check your internet connection.');
-  }
+  const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: location.origin+'/pages/auth.html' });
+  if (error) showErr(error.message);
+  else showOk('Password reset email sent! Check your inbox.');
 }
 
 function goApp()    { location.href = '../pages/app.html'; }
