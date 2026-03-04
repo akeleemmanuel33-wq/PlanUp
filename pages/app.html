@@ -6,32 +6,39 @@
 <title>PlanUp</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+/* ── Variables ── */
 :root{
-  --accent:#6366f1;--accent-light:#eef2ff;
+  --accent:#6366f1;--accent-light:rgba(99,102,241,.12);
   --bg:#fff;--bg2:#f9fafb;--bg3:#f3f4f6;
-  --border:#e5e7eb;--text:#111827;--text2:#6b7280;--text3:#9ca3af;
-  --red:#ef4444;--red-bg:#fef2f2;--green:#10b981;--green-bg:#f0fdf4;
-  --amber:#f59e0b;--amber-bg:#fffbeb;--blue:#3b82f6;--blue-bg:#eff6ff;
+  --border:rgba(0,0,0,.09);--border2:rgba(0,0,0,.14);
+  --text:#111827;--text2:#6b7280;--text3:#9ca3af;
+  --red:#ef4444;--red-bg:#fef2f2;
+  --green:#10b981;--green-bg:#f0fdf4;
+  --amber:#f59e0b;--amber-bg:#fffbeb;
+  --blue:#3b82f6;--blue-bg:#eff6ff;
   --sidebar:240px;--topbar:56px;
   --r:8px;--r2:12px;--r3:16px;
-  --sh:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06);
-  --sh2:0 4px 6px -1px rgba(0,0,0,.1),0 2px 4px -1px rgba(0,0,0,.06);
-  --sh3:0 20px 25px -5px rgba(0,0,0,.1),0 10px 10px -5px rgba(0,0,0,.04);
+  --sh:0 1px 3px rgba(0,0,0,.1);
+  --sh2:0 4px 6px -1px rgba(0,0,0,.1);
+  --sh3:0 20px 40px rgba(0,0,0,.15);
 }
 [data-theme=dark]{
+  --accent-light:rgba(99,102,241,.15);
   --bg:#111827;--bg2:#1f2937;--bg3:#374151;
-  --border:#374151;--text:#f9fafb;--text2:#9ca3af;--text3:#6b7280;
+  --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.14);
+  --text:#f9fafb;--text2:#9ca3af;--text3:#6b7280;
   --red-bg:#450a0a;--green-bg:#052e16;--amber-bg:#451a03;--blue-bg:#0c1a4d;
+  --sh3:0 20px 40px rgba(0,0,0,.4);
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden;font-size:14px;-webkit-font-smoothing:antialiased}
 
-/* Layout */
+/* ── Layout ── */
 #app{display:grid;grid-template-columns:var(--sidebar) 1fr;height:100vh}
 #sidebar{display:flex;flex-direction:column;background:var(--bg2);border-right:1px solid var(--border);overflow:hidden}
 #main{display:flex;flex-direction:column;overflow:hidden}
 
-/* Sidebar */
+/* ── Sidebar ── */
 .s-brand{height:var(--topbar);display:flex;align-items:center;gap:8px;padding:0 16px;border-bottom:1px solid var(--border);flex-shrink:0}
 .s-logo{width:28px;height:28px;background:var(--accent);border-radius:var(--r);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px}
 .s-name{font-weight:700;font-size:15px;letter-spacing:-.3px}
@@ -46,6 +53,15 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
 .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .s-add{display:flex;align-items:center;gap:8px;padding:7px 16px;border:none;background:none;width:100%;text-align:left;font-family:inherit;font-size:13px;color:var(--text3);cursor:pointer}
 .s-add:hover{color:var(--accent)}
+.s-del-btn{
+  width:22px;height:22px;border:none;background:transparent;
+  border-radius:5px;cursor:pointer;display:flex;align-items:center;
+  justify-content:center;color:var(--text3);flex-shrink:0;
+  opacity:0;transition:opacity .12s,background .1s,color .1s;
+  margin-right:8px;
+}
+.s-item-wrap:hover .s-del-btn{opacity:1}
+.s-del-btn:hover{background:var(--red-bg);color:var(--red)}
 .s-foot{padding:12px;border-top:1px solid var(--border);flex-shrink:0}
 .s-user{display:flex;align-items:center;gap:8px;padding:8px;border-radius:var(--r);cursor:pointer;transition:background .1s}
 .s-user:hover{background:var(--bg3)}
@@ -54,162 +70,169 @@ body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);heigh
 .u-name{font-size:13px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .u-email{font-size:11px;color:var(--text3);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
-/* Topbar */
+/* ── Topbar ── */
 #topbar{height:var(--topbar);display:flex;align-items:center;gap:10px;padding:0 20px;border-bottom:1px solid var(--border);flex-shrink:0}
 .search{position:relative;flex:1;max-width:300px}
 .search input{width:100%;height:32px;padding:0 10px 0 32px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg2);font-family:inherit;font-size:13px;color:var(--text);outline:none;transition:all .15s}
 .search input:focus{background:var(--bg);border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)}
 .search input::placeholder{color:var(--text3)}
-.search-ic{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:13px;pointer-events:none}
+.search-ic{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text3);pointer-events:none;display:flex}
 .tb-actions{display:flex;align-items:center;gap:6px;margin-left:auto}
 
-/* Buttons */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;border:none;border-radius:var(--r);font-family:inherit;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap}
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:5px;border-radius:var(--r);font-family:inherit;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;border:1px solid var(--border2);background:var(--bg3);color:var(--text)}
 .btn:disabled{opacity:.5;cursor:not-allowed}
-.btn-primary{background:var(--accent);color:#fff;padding:0 14px;height:32px;font-size:13px}
+.btn-primary{background:var(--accent);color:#fff;padding:0 14px;height:32px;font-size:13px;border:none}
 .btn-primary:hover{filter:brightness(1.1)}
-.btn-ghost{background:transparent;color:var(--text2);padding:0 10px;height:32px;font-size:13px}
+.btn-ghost{background:transparent;color:var(--text2);padding:0 10px;height:32px;font-size:13px;border:1px solid var(--border)}
 .btn-ghost:hover{background:var(--bg3);color:var(--text)}
 .btn-sm{height:28px;padding:0 10px;font-size:12px;border-radius:6px}
-.btn-danger{background:var(--red-bg);color:var(--red);padding:0 10px;height:28px;font-size:12px}
-.btn-danger:hover{background:var(--red);color:#fff}
-.icon-btn{width:30px;height:30px;border:none;background:transparent;border-radius:var(--r);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:15px;transition:background .1s,color .1s}
+.btn-danger{background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);color:#f87171;padding:0 10px;height:28px;font-size:12px;border-radius:6px}
+.btn-danger:hover{background:rgba(239,68,68,.25)}
+.icon-btn{width:30px;height:30px;border:none;background:transparent;border-radius:var(--r);cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);transition:background .1s,color .1s}
 .icon-btn:hover{background:var(--bg3);color:var(--text)}
 
-/* Task area */
+/* ── Task area ── */
 #task-area{flex:1;overflow-y:auto;padding:20px 24px 80px}
 .ta-header{display:flex;align-items:center;gap:10px;margin-bottom:16px}
 .ta-title{font-size:16px;font-weight:600;letter-spacing:-.3px}
 .ta-count{font-size:12px;color:var(--text3);background:var(--bg3);border-radius:99px;padding:2px 8px}
 
-/* Filter bar */
+/* ── Filter bar ── */
 #filter-bar{display:flex;align-items:center;gap:6px;margin-bottom:16px;flex-wrap:wrap}
 .fc{height:26px;padding:0 10px;border:1px solid var(--border);border-radius:99px;background:var(--bg2);font-family:inherit;font-size:12px;color:var(--text2);cursor:pointer;transition:all .1s;white-space:nowrap}
 .fc:hover{border-color:var(--accent);color:var(--accent)}
 .fc.on{background:var(--accent-light);border-color:var(--accent);color:var(--accent);font-weight:500}
 
-/* Bulk bar */
+/* ══════════════════════════════════════
+   BULK BAR — copied from test-bulk.html
+══════════════════════════════════════ */
 #bulk-bar{
   display:flex;align-items:center;gap:6px;padding:10px 14px;
   background:var(--bg2);border:1px solid var(--accent);
   border-radius:var(--r2);margin-bottom:14px;flex-wrap:wrap;
   box-shadow:0 0 0 3px var(--accent-light);
 }
+#bulk-bar.hidden{display:none!important}
 .bulk-cnt{font-size:13px;font-weight:600;color:var(--accent);flex:1;min-width:80px}
-.bulk-sep{width:1px;height:20px;background:var(--border);flex-shrink:0}
-/* Bulk priority dropdown */
-#bulk-priority-wrap{position:relative;display:inline-flex}
-#bulk-priority-dd{
-  position:absolute;top:calc(100% + 6px);left:0;z-index:100;
-  background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);
-  padding:4px;min-width:150px;box-shadow:var(--sh3);display:none;flex-direction:column;gap:2px;
-}
-#bulk-priority-dd.open{display:flex}
-#bulk-priority-dd button{
-  display:flex;align-items:center;gap:8px;padding:7px 10px;
-  background:none;border:none;border-radius:var(--r);
-  font-family:inherit;font-size:13px;color:var(--text);cursor:pointer;text-align:left;
-}
-#bulk-priority-dd button:hover{background:var(--bg3)}
-/* Bulk list dropdown */
-#bulk-list-wrap{position:relative;display:inline-flex}
-#bulk-list-dd{
-  position:absolute;top:calc(100% + 6px);left:0;z-index:100;
-  background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);
-  padding:4px;min-width:160px;box-shadow:var(--sh3);display:none;flex-direction:column;gap:2px;
-}
-#bulk-list-dd.open{display:flex}
-#bulk-list-dd button{
-  display:flex;align-items:center;gap:8px;padding:7px 10px;
-  background:none;border:none;border-radius:var(--r);
-  font-family:inherit;font-size:13px;color:var(--text);cursor:pointer;
-}
-#bulk-list-dd button:hover{background:var(--bg3)}
-.bulk-list-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.bulk-sep{width:1px;height:20px;background:var(--border2);flex-shrink:0}
 
-/* Task card */
-.card{display:flex;align-items:flex-start;gap:10px;padding:11px 14px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);margin-bottom:7px;cursor:pointer;transition:border-color .15s,box-shadow .15s;position:relative;animation:fadeUp .18s ease both}
-.card:hover{border-color:var(--accent);box-shadow:0 2px 8px var(--accent-light)}
-.card.done{opacity:.55}
-.card.done .ctitle{text-decoration:line-through;color:var(--text3)}
+/* ── Bulk dropdowns — copied from test-bulk.html ── */
+.dd-wrap{position:relative;display:inline-flex}
+.dd-menu{
+  position:absolute;top:calc(100% + 6px);left:0;z-index:200;
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:var(--r2);padding:4px;min-width:150px;
+  box-shadow:var(--sh3);display:none;flex-direction:column;gap:2px;
+}
+.dd-menu.open{display:flex}
+.dd-menu button{
+  display:flex;align-items:center;gap:8px;padding:8px 10px;
+  background:none;border:none;border-radius:var(--r);
+  font-family:inherit;font-size:13px;color:var(--text);
+  cursor:pointer;text-align:left;width:100%;
+}
+.dd-menu button:hover{background:var(--bg3)}
+
+/* ══════════════════════════════════════
+   CARDS — copied from test-bulk.html
+══════════════════════════════════════ */
+.card{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 14px;background:var(--bg2);
+  border:1px solid var(--border);border-radius:var(--r2);
+  margin-bottom:8px;cursor:pointer;transition:all .15s;position:relative;
+  user-select:none;-webkit-user-select:none;
+  animation:fadeUp .18s ease both;
+}
+.card:hover{border-color:var(--border2)}
+.card.done .ctitle{text-decoration:line-through;opacity:.45}
 .card.pinned{border-color:var(--amber)}
 .card.overdue .cdue{color:var(--red)}
 .card.sel{background:var(--accent-light);border-color:var(--accent)}
-
-/* ── Selection mode (matches test-bulk.html exactly) ── */
-.card-check{
-  width:17px;height:17px;border-radius:5px;
-  border:2px solid var(--border);flex-shrink:0;
-  transition:all .15s;background:var(--bg);margin-top:1px;
-}
-body.sel-mode .card.sel .card-check{
-  background:var(--accent);border-color:var(--accent);
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:center;
-}
-body:not(.sel-mode) .card-check{display:none}
-body.sel-mode .card .cb{display:none}
-body.sel-mode .card{cursor:pointer;user-select:none;-webkit-user-select:none}
 .card.pressing{background:var(--accent-light)!important}
-#sel-mode-badge{
-  display:none;background:var(--accent);color:#fff;
-  font-size:11px;font-weight:600;padding:5px 14px;border-radius:99px;
-  margin-bottom:12px;text-align:center;
-  animation:selFadeIn .2s ease;
-}
-body.sel-mode #sel-mode-badge{display:block}
-@keyframes selFadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-
-body.sel-mode .card.sel 
-body:not(.sel-mode) 
-
-
-
-
-
-.card.dragging{opacity:.35;border-style:dashed}
 .card::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:0 2px 2px 0;opacity:0;transition:opacity .15s}
 .card:hover::before,.card.sel::before{opacity:1}
 .card[data-p=high]::before{background:var(--red)}
 .card[data-p=medium]::before{background:var(--amber)}
 .card[data-p=low]::before{background:var(--green)}
+
+/* ── card-check — selection checkbox ── */
+.card-check{
+  width:0;height:17px;border-radius:5px;
+  border:none;flex-shrink:0;
+  transition:all .15s;background:var(--bg);
+  opacity:0;cursor:pointer;overflow:hidden;
+}
+/* Show on hover — expand and reveal */
+.card:hover .card-check{width:17px;border:2px solid var(--border2);opacity:.5;margin-right:0}
+/* Selected state */
+body.sel-mode .card.sel .card-check{
+  opacity:1;background:var(--accent);border-color:var(--accent);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:center;
+}
+/* In sel-mode: show all card-checks (even unselected ones show dimly) */
+body.sel-mode .card-check{width:17px;border:2px solid var(--border2);opacity:.4}
+body.sel-mode .card:hover .card-check{opacity:.7}
+/* Hide normal completion checkbox in sel-mode */
+/* Hide BOTH checkboxes by default, show only on hover */
+.card .cb{opacity:0;width:0;border:none;overflow:hidden;transition:all .15s}
+.card:hover .cb{opacity:1;width:17px;border:1.5px solid var(--border2)}
+/* In sel-mode: cb fully hidden, card-check takes over */
+body.sel-mode .card .cb{display:none}
+
+/* ── sel-badge ── */
+#sel-badge{
+  display:none;background:var(--accent);color:#fff;
+  font-size:11px;font-weight:600;padding:5px 14px;border-radius:99px;
+  margin-bottom:12px;text-align:center;animation:selFadeIn .2s ease;
+}
+body.sel-mode #sel-badge{display:block}
+@keyframes selFadeIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── card body ── */
 .cbody{flex:1;min-width:0}
 .ctitle{font-size:13.5px;font-weight:500;line-height:1.4;margin-bottom:3px;word-break:break-word}
 .cdesc{font-size:12px;color:var(--text3);line-height:1.5;margin-bottom:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .cmeta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:4px}
-.cdue{font-size:11px;color:var(--text3);font-weight:500}
-.cactions{display:flex;align-items:center;gap:2px;opacity:0;transition:opacity .15s;flex-shrink:0;margin-top:-2px}
+.cdue{font-size:11px;color:var(--text3);font-weight:500;display:inline-flex;align-items:center;gap:3px}
+.cactions{display:flex;align-items:center;gap:2px;opacity:0;transition:opacity .15s;flex-shrink:0}
 .card:hover .cactions{opacity:1}
 
-/* Badge */
+/* ── Normal checkbox (inside cards, hidden in sel-mode) ── */
+.cb{width:17px;height:17px;border-radius:5px;border:1.5px solid var(--border2);background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.cb:hover{border-color:var(--accent)}
+.cb.on{background:var(--accent);border-color:var(--accent)}
+.cb.on::after{content:'';width:9px;height:5px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translateY(-1px)}
+
+/* ── Badge ── */
 .badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:99px;font-size:11px;font-weight:500;height:18px}
 .b-high{background:var(--red-bg);color:var(--red)}
 .b-medium{background:var(--amber-bg);color:var(--amber)}
 .b-low{background:var(--green-bg);color:var(--green)}
 
-/* Checkbox */
-.cb{width:17px;height:17px;border-radius:5px;border:1.5px solid var(--border);background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;margin-top:1px}
-.cb:hover{border-color:var(--accent)}
-.cb.on{background:var(--accent);border-color:var(--accent)}
-.cb.on::after{content:'';width:9px;height:5px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translateY(-1px)}
-
-/* Progress */
+/* ── Progress bar ── */
 .pbar{height:3px;background:var(--bg3);border-radius:99px;overflow:hidden}
 .pfill{height:100%;background:var(--accent);border-radius:99px;transition:width .3s}
 .pfill.g{background:var(--green)}
 
-/* Modal */
+/* ── Section divider ── */
+.section-divider{display:flex;align-items:center;gap:8px;margin:4px 0 8px;padding:0 2px}
+.section-divider-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3)}
+.section-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── Modal ── */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);backdrop-filter:blur(3px);z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .15s}
 .overlay.on{opacity:1;pointer-events:all}
 .modal{background:var(--bg);border-radius:var(--r3);box-shadow:var(--sh3);width:540px;max-width:calc(100vw - 32px);max-height:calc(100vh - 60px);display:flex;flex-direction:column;transform:translateY(10px) scale(.98);transition:transform .15s;overflow:hidden}
 .overlay.on .modal{transform:none}
-/* Mobile slide-up handled in @media block */
 .mh{padding:18px 20px 0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 .mh h3{font-size:15px;font-weight:600}
 .mb{padding:16px 20px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:14px}
 .mf{padding:14px 20px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
 
-/* Form */
+/* ── Form ── */
 .fg{display:flex;flex-direction:column;gap:6px}
 .fl{font-size:12px;font-weight:500;color:var(--text2)}
 .fr{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -219,17 +242,13 @@ body:not(.sel-mode)
 .inp.err{border-color:var(--red)}
 .txta{width:100%;padding:8px 10px;font-family:inherit;font-size:13px;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:var(--r);outline:none;resize:vertical;min-height:72px;line-height:1.5;transition:all .15s}
 .txta:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)}
-.sel{width:100%;height:34px;padding:0 24px 0 10px;font-family:inherit;font-size:13px;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:var(--r);outline:none;appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;transition:all .15s}
-.sel:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)}
-
-/* Tags in modal */
+.fsel{width:100%;height:34px;padding:0 24px 0 10px;font-family:inherit;font-size:13px;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:var(--r);outline:none;appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 8px center;transition:all .15s}
+.fsel:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-light)}
 .tag-btn{display:inline-flex;align-items:center;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:500;border:1px solid var(--border);background:var(--bg3);color:var(--text2);cursor:pointer;transition:all .15s}
-
-/* Subtask row */
 .st-row{display:flex;align-items:center;gap:7px}
 .st-row .inp{flex:1;height:28px;font-size:12px}
 
-/* Dropdown */
+/* ── User dropdown ── */
 .ddrop{position:fixed;min-width:170px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);box-shadow:var(--sh2);z-index:200;overflow:hidden;opacity:0;pointer-events:none;transform:scale(.95);transition:all .12s;transform-origin:bottom left}
 .ddrop.on{opacity:1;pointer-events:all;transform:none}
 .dd-item{display:flex;align-items:center;gap:8px;padding:8px 14px;font-size:13px;color:var(--text);cursor:pointer;border:none;background:none;width:100%;text-align:left;font-family:inherit;transition:background .1s}
@@ -238,155 +257,30 @@ body:not(.sel-mode)
 .dd-item.red:hover{background:var(--red-bg)}
 .dd-sep{height:1px;background:var(--border);margin:3px 0}
 
-/* Empty */
+/* ── Misc ── */
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:280px;gap:10px;color:var(--text3);text-align:center;padding:32px}
-.empty-ic{font-size:2rem;opacity:.4}
 .empty h3{font-size:14px;font-weight:500;color:var(--text2)}
 .empty p{font-size:12px;max-width:200px;line-height:1.6}
-
-/* Skeleton */
-.skel{background:linear-gradient(90deg,var(--bg3) 25%,var(--border) 50%,var(--bg3) 75%);background-size:200% 100%;animation:shim 1.4s ease infinite;border-radius:var(--r2);margin-bottom:7px}
+.skel{background:linear-gradient(90deg,var(--bg3) 25%,var(--border) 50%,var(--bg3) 75%);background-size:200% 100%;animation:shim 1.4s ease infinite;border-radius:var(--r2);margin-bottom:8px}
 @keyframes shim{0%{background-position:200% 0}100%{background-position:-200% 0}}
-
-/* Toast */
 #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(60px);background:#111827;color:#fff;padding:9px 16px;border-radius:var(--r);font-size:13px;font-weight:500;box-shadow:var(--sh3);z-index:999;white-space:nowrap;pointer-events:none;transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
 #toast.show{transform:translateX(-50%) translateY(0)}
 #toast.err{background:var(--red)}
 #toast.ok{background:var(--green)}
-
-/* Add inline */
 .add-inline{display:flex;align-items:center;gap:10px;padding:9px 14px;border:1.5px dashed var(--border);border-radius:var(--r2);cursor:pointer;color:var(--text3);font-size:13px;margin-top:6px;background:none;width:100%;font-family:inherit;transition:all .15s}
 .add-inline:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light)}
-
-/* Stat cards */
 .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
-.stat-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);padding:14px}
+.stat-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);padding:14px;text-align:center}
 .stat-val{font-size:26px;font-weight:700;line-height:1}
 .stat-lbl{font-size:11px;color:var(--text3);margin-top:4px}
-
 @keyframes fadeUp{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
 .hidden{display:none!important}
+.ic{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.ic svg{display:block}
+.pin-active{color:var(--amber)!important}
+.kbd{display:inline-flex;align-items:center;padding:1px 5px;border:1px solid var(--border);border-radius:4px;font-size:10px;font-weight:500;color:var(--text3);background:var(--bg2);font-family:monospace;line-height:1.4}
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
-
-/* ══════════════════════════════════════
-   MOBILE RESPONSIVE
-══════════════════════════════════════ */
-
-/* Tablet — collapse sidebar */
-@media (max-width: 900px) {
-  #app { grid-template-columns: 1fr; }
-
-  #sidebar {
-    position: fixed;
-    top: 0; left: 0;
-    width: 280px;
-    height: 100vh;
-    z-index: 50;
-    transform: translateX(-100%);
-    transition: transform .25s cubic-bezier(.4,0,.2,1);
-    box-shadow: 4px 0 24px rgba(0,0,0,.15);
-  }
-
-  #sidebar.open {
-    transform: translateX(0);
-  }
-
-  #sidebar-backdrop.show {
-    display: block !important;
-    animation: fadeIn .2s ease;
-  }
-
-  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-
-  #menu-btn { display: flex !important; }
-
-  /* Topbar tweaks */
-  #topbar { padding: 0 12px; gap: 8px; }
-  .search  { max-width: none; flex: 1; }
-
-  /* Task area */
-  #task-area { padding: 16px 14px 80px; }
-
-  /* Modal full-screen on mobile */
-  .modal {
-    width: 100%;
-    max-width: 100%;
-    max-height: 100%;
-    border-radius: 20px 20px 0 0;
-    margin-top: auto;
-  }
-
-  .overlay {
-    align-items: flex-end;
-  }
-
-  .overlay.on .modal {
-    transform: translateY(0);
-  }
-
-  .modal .mb { max-height: 65vh; }
-}
-
-/* Phone — tighter spacing */
-@media (max-width: 480px) {
-  #topbar { padding: 0 10px; }
-
-  .ta-header { flex-wrap: wrap; gap: 6px; }
-  .ta-title  { font-size: 15px; }
-
-  /* Stack form rows */
-  .fr { grid-template-columns: 1fr; gap: 10px; }
-
-  /* Bigger touch targets */
-  .card { padding: 12px 12px; }
-  .cb   { width: 20px; height: 20px; border-radius: 6px; }
-  .t-title-text { font-size: 14px; }
-
-  /* Stat grid 2-col */
-  .stat-grid { grid-template-columns: 1fr 1fr; }
-
-  /* Hide some topbar items on tiny screens */
-  .btn-ghost { display: none; }
-
-  /* Floating add button */
-  #fab {
-    display: flex !important;
-  }
-}
-
-/* FAB — floating action button */
-#fab {
-  display: none;
-  position: fixed;
-  bottom: 24px;
-  right: 20px;
-  width: 52px; height: 52px;
-  background: var(--accent);
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  font-size: 24px;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 40;
-  box-shadow: 0 4px 20px rgba(99,102,241,.5);
-  transition: transform .15s, box-shadow .15s;
-}
-
-#fab:hover  { transform: scale(1.08); }
-#fab:active { transform: scale(.94); }
-
-
-/* ── Section divider ── */
-.section-divider{display:flex;align-items:center;gap:8px;margin:4px 0 8px;padding:0 2px}
-.section-divider-ic{font-size:11px}
-.section-divider-lbl{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text3)}
-.section-divider::after{content:'';flex:1;height:1px;background:var(--border)}
-
-/* ── Keyboard shortcut badge ── */
-.kbd{display:inline-flex;align-items:center;padding:1px 5px;border:1px solid var(--border);border-radius:4px;font-size:10px;font-weight:500;color:var(--text3);background:var(--bg2);font-family:monospace;line-height:1.4}
 
 /* ── Command palette ── */
 #cmd-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);backdrop-filter:blur(4px);z-index:500;display:flex;align-items:flex-start;justify-content:center;padding-top:15vh;opacity:0;pointer-events:none;transition:opacity .15s}
@@ -394,15 +288,13 @@ body:not(.sel-mode)
 #cmd-box{background:var(--bg);border:1px solid var(--border);border-radius:14px;box-shadow:0 24px 48px rgba(0,0,0,.25);width:560px;max-width:calc(100vw - 32px);overflow:hidden;transform:translateY(-8px) scale(.97);transition:transform .15s}
 #cmd-overlay.on #cmd-box{transform:none}
 #cmd-input-wrap{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border)}
-#cmd-input-wrap span{font-size:18px;color:var(--text3)}
 #cmd-input{flex:1;border:none;outline:none;font-family:inherit;font-size:15px;color:var(--text);background:transparent}
 #cmd-input::placeholder{color:var(--text3)}
 #cmd-results{max-height:340px;overflow-y:auto}
 .cmd-section{padding:6px 12px 2px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text3)}
 .cmd-item{display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;transition:background .1s;border-radius:6px;margin:1px 4px}
 .cmd-item:hover,.cmd-item.active{background:var(--accent-light);color:var(--accent)}
-.cmd-item .cmd-ic{font-size:15px;width:22px;text-align:center;flex-shrink:0}
-.cmd-item .cmd-lbl{flex:1;font-size:13px;font-weight:450}
+.cmd-item .cmd-lbl{flex:1;font-size:13px}
 .cmd-item .cmd-sub{font-size:11px;color:var(--text3)}
 .cmd-item.active .cmd-sub{color:var(--accent)}
 #cmd-empty{padding:32px;text-align:center;color:var(--text3);font-size:13px}
@@ -415,25 +307,45 @@ body.focus-mode #sidebar:hover{opacity:1;pointer-events:all}
 body.focus-mode #topbar{opacity:.15;transition:opacity .3s}
 body.focus-mode #topbar:hover{opacity:1}
 body.focus-mode .cactions{display:none}
-#focus-badge{position:fixed;top:12px;right:16px;z-index:300;background:var(--accent);color:#fff;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:600;display:none;align-items:center;gap:6px;cursor:pointer;box-shadow:0 2px 8px var(--accent-light)}
+#focus-badge{position:fixed;top:12px;right:16px;z-index:300;background:var(--accent);color:#fff;padding:4px 10px;border-radius:99px;font-size:11px;font-weight:600;display:none;align-items:center;gap:6px;cursor:pointer}
 body.focus-mode #focus-badge{display:flex}
 
-/* ── Quick capture toast input ── */
+/* ── Quick capture ── */
 #quick-capture{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);opacity:0;pointer-events:none;z-index:300;background:var(--bg);border:1px solid var(--accent);border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.15);padding:12px 14px;display:flex;align-items:center;gap:10px;min-width:360px;max-width:90vw;transition:all .2s}
 #quick-capture.on{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:all}
 #qc-input{flex:1;border:none;outline:none;font-family:inherit;font-size:14px;color:var(--text);background:transparent}
 #qc-input::placeholder{color:var(--text3)}
-#qc-hint{font-size:11px;color:var(--text3);white-space:nowrap}
 
+/* ── Sort menu ── */
+#sort-menu{display:none;position:absolute;top:36px;right:0;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);box-shadow:var(--sh2);min-width:160px;z-index:50;overflow:hidden}
 
-/* ── SVG Icons ── */
-.ic { display:inline-flex;align-items:center;justify-content:center;flex-shrink:0; }
-.ic svg { display:block; }
-.icon-btn .ic { pointer-events:none; }
-.s-item .ic   { opacity:.7; }
-.s-item.on .ic{ opacity:1; }
-.pin-active    { color:var(--amber)!important; }
-.pin-active .ic svg { stroke:var(--amber); }
+/* ── Mobile ── */
+@media(max-width:900px){
+  #app{grid-template-columns:1fr}
+  #sidebar{position:fixed;top:0;left:0;width:280px;height:100vh;z-index:50;transform:translateX(-100%);transition:transform .25s cubic-bezier(.4,0,.2,1);box-shadow:4px 0 24px rgba(0,0,0,.15)}
+  #sidebar.open{transform:translateX(0)}
+  #menu-btn{display:flex!important}
+  #topbar{padding:0 12px;gap:8px}
+  .search{max-width:none;flex:1}
+  #task-area{padding:16px 14px 80px}
+  .modal{width:100%;max-width:100%;max-height:100%;border-radius:20px 20px 0 0;margin-top:auto}
+  .overlay{align-items:flex-end}
+  .overlay.on .modal{transform:translateY(0)}
+  .modal .mb{max-height:65vh}
+}
+@media(max-width:480px){
+  .sel-hint-text{display:none!important}
+  #topbar{padding:0 10px}
+  .ta-header{flex-wrap:wrap;gap:6px}
+  .fr{grid-template-columns:1fr;gap:10px}
+  .card{padding:12px 12px}
+  .stat-grid{grid-template-columns:1fr 1fr}
+  .btn-ghost{display:none}
+  #fab{display:flex!important}
+}
+#fab{display:none;position:fixed;bottom:24px;right:20px;width:52px;height:52px;background:var(--accent);color:#fff;border:none;border-radius:50%;align-items:center;justify-content:center;cursor:pointer;z-index:40;box-shadow:0 4px 20px rgba(99,102,241,.5);transition:transform .15s}
+#fab:hover{transform:scale(1.08)}
+#fab:active{transform:scale(.94)}
 </style>
 </head>
 <body>
@@ -447,26 +359,50 @@ body.focus-mode #focus-badge{display:flex}
     </div>
     <div class="s-body">
       <div>
-        <button class="s-item on" id="n-all"      onclick="nav('all')"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><polyline points="3 6 4 7 6 5"/><polyline points="3 12 4 13 6 11"/><polyline points="3 18 4 19 6 17"/></svg></span>  <span class="lbl">All Tasks</span> <span class="cnt" id="c-all">0</span></button>
-        <button class="s-item"    id="n-today"    onclick="nav('today')"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></span>      <span class="lbl">Today</span>     <span class="cnt" id="c-today">0</span></button>
-        <button class="s-item"    id="n-upcoming" onclick="nav('upcoming')"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>  <span class="lbl">Upcoming</span>  <span class="cnt" id="c-upcoming">0</span></button>
-        <button class="s-item"    id="n-overdue"  onclick="nav('overdue')"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>  <span class="lbl">Overdue</span>   <span class="cnt" id="c-overdue">0</span></button>
-        <button class="s-item"    id="n-analytics"onclick="nav('analytics')"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>  <span class="lbl">Analytics</span></button>
+        <button class="s-item on" id="n-all" onclick="nav('all')">
+          <span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><polyline points="3 6 4 7 6 5"/><polyline points="3 12 4 13 6 11"/><polyline points="3 18 4 19 6 17"/></svg></span>
+          <span class="lbl">All Tasks</span><span class="cnt" id="c-all">0</span>
+        </button>
+        <button class="s-item" id="n-today" onclick="nav('today')">
+          <span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></span>
+          <span class="lbl">Today</span><span class="cnt" id="c-today">0</span>
+        </button>
+        <button class="s-item" id="n-upcoming" onclick="nav('upcoming')">
+          <span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span>
+          <span class="lbl">Upcoming</span><span class="cnt" id="c-upcoming">0</span>
+        </button>
+        <button class="s-item" id="n-overdue" onclick="nav('overdue')">
+          <span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
+          <span class="lbl">Overdue</span><span class="cnt" id="c-overdue">0</span>
+        </button>
+        <button class="s-item" id="n-analytics" onclick="nav('analytics')">
+          <span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
+          <span class="lbl">Analytics</span>
+        </button>
+        <button class="s-item" onclick="location.href='events.html'">
+          <span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="12" y2="18"/></svg></span>
+          <span class="lbl">Event Orders</span>
+        </button>
       </div>
       <div class="s-label">Lists</div>
       <div id="s-lists"></div>
-      <button class="s-add" onclick="addList()"><span class="ic" style="width:13px;height:13px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span> New list</button>
+      <button class="s-add" onclick="addList()">
+        <span class="ic" style="width:13px;height:13px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+        New list
+      </button>
       <div class="s-label" style="display:flex;align-items:center;justify-content:space-between;padding-right:12px">
         <span>Tags</span>
-        <button onclick="openTagManager()" style="background:none;border:none;cursor:pointer;color:var(--text3);padding:0;display:flex;align-items:center" title="Manage tags"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
+        <button onclick="openTagManager()" style="background:none;border:none;cursor:pointer;color:var(--text3);padding:0;display:flex;align-items:center">
+          <span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+        </button>
       </div>
       <div id="s-tags"></div>
     </div>
     <div class="s-foot">
-      <div class="s-user" onclick="toggleDD()">
+      <div class="s-user" onclick="toggleUserDD()">
         <div class="avatar" id="u-av">?</div>
         <div class="u-info">
-          <div class="u-name"  id="u-nm">…</div>
+          <div class="u-name" id="u-nm">…</div>
           <div class="u-email" id="u-em"></div>
         </div>
         <span style="color:var(--text3);font-size:13px">⚙</span>
@@ -482,23 +418,34 @@ body.focus-mode #focus-badge{display:flex}
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
       </button>
       <div class="search">
-        <span class="search-ic">🔍</span>
-        <input type="text" placeholder="Search tasks…" oninput="doSearch(this.value)" id="s-inp"/>
+        <span class="search-ic"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+        <input type="text" placeholder="Search tasks… (Cmd+K)" oninput="doSearch(this.value)" id="s-inp"/>
       </div>
       <div class="tb-actions">
-        <button class="btn btn-ghost" onclick="toggleFilters()"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="21" y1="4" x2="14" y2="4"/><line x1="10" y1="4" x2="3" y2="4"/><line x1="21" y1="12" x2="12" y2="12"/><line x1="8" y1="12" x2="3" y2="12"/><line x1="21" y1="20" x2="16" y2="20"/><line x1="12" y1="20" x2="3" y2="20"/><circle cx="12" cy="4" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="14" cy="20" r="2"/></svg></span> Filter</button>
-        <button class="icon-btn" id="sort-btn" onclick="cycleSortMenu()" title="Sort tasks" style="position:relative"><span class="ic" style="width:15px;height:15px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="11 17 6 22 1 17"/><path d="M6 3v19"/><polyline points="13 7 18 2 23 7"/><path d="M18 3v19"/></svg></span>
-          <div id="sort-menu" style="display:none;position:absolute;top:36px;right:0;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);box-shadow:var(--sh2);min-width:160px;z-index:50;overflow:hidden">
-            <div class="dd-item" onclick="event.stopPropagation();setSort('default')"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><polyline points="3 6 4 7 6 5"/><polyline points="3 12 4 13 6 11"/><polyline points="3 18 4 19 6 17"/></svg></span> Default</div>
-            <div class="dd-item" onclick="event.stopPropagation();setSort('priority')"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span> Priority</div>
-            <div class="dd-item" onclick="event.stopPropagation();setSort('due')"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></span> Due date</div>
-            <div class="dd-item" onclick="event.stopPropagation();setSort('alpha')"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 14h-5"/><path d="M16 16v-3.5a2.5 2.5 0 0 1 5 0V16"/><path d="M4.5 13h6"/><path d="m3 16 4.5-9 4.5 9"/></svg></span> A → Z</div>
-            <div class="dd-item" onclick="event.stopPropagation();setSort('created')"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span> Recently added</div>
+        <button class="btn btn-ghost" onclick="toggleFilters()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="21" y1="4" x2="14" y2="4"/><line x1="10" y1="4" x2="3" y2="4"/><line x1="21" y1="12" x2="12" y2="12"/><line x1="8" y1="12" x2="3" y2="12"/><line x1="21" y1="20" x2="16" y2="20"/><line x1="12" y1="20" x2="3" y2="20"/><circle cx="12" cy="4" r="2"/><circle cx="10" cy="12" r="2"/><circle cx="14" cy="20" r="2"/></svg>
+          Filter
+        </button>
+        <button class="icon-btn" id="sort-btn" onclick="cycleSortMenu()" title="Sort" style="position:relative">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="11 17 6 22 1 17"/><path d="M6 3v19"/><polyline points="13 7 18 2 23 7"/><path d="M18 3v19"/></svg>
+          <div id="sort-menu">
+            <div class="dd-item" onclick="event.stopPropagation();setSort('default')">Default</div>
+            <div class="dd-item" onclick="event.stopPropagation();setSort('priority')">Priority</div>
+            <div class="dd-item" onclick="event.stopPropagation();setSort('due')">Due date</div>
+            <div class="dd-item" onclick="event.stopPropagation();setSort('alpha')">A → Z</div>
+            <div class="dd-item" onclick="event.stopPropagation();setSort('created')">Recently added</div>
           </div>
         </button>
-        <button class="icon-btn" onclick="toggleFocus()" title="Focus mode (F)"><span class="ic" style="width:15px;height:15px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/></svg></span></button>
-        <button class="icon-btn" id="theme-icon-btn" onclick="toggleTheme()" title="Toggle theme"><span class="ic" style="width:15px;height:15px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span></button>
-        <button class="btn btn-primary" onclick="openModal(null)" title="New task (C)"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span> New Task</button>
+        <button class="icon-btn" onclick="toggleFocus()" title="Focus mode (F)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/></svg>
+        </button>
+        <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button class="btn btn-primary" onclick="openModal(null)">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          New Task
+        </button>
       </div>
     </div>
 
@@ -511,73 +458,72 @@ body.focus-mode #focus-badge{display:flex}
         <button class="fc" onclick="setFilter('status','completed')">Completed</button>
         <span style="width:1px;height:16px;background:var(--border)"></span>
         <span style="font-size:11px;font-weight:500;color:var(--text3)">Priority:</span>
-        <button class="fc" onclick="setFilter('priority','high')"><span class="ic" style="width:12px;height:12px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></span> High</button>
+        <button class="fc" onclick="setFilter('priority','high')">🔴 High</button>
         <button class="fc" onclick="setFilter('priority','medium')">🟡 Medium</button>
         <button class="fc" onclick="setFilter('priority','low')">🟢 Low</button>
-        <button class="fc" onclick="clearFilters()" style="margin-left:auto"><span class="ic" style="width:12px;height:12px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span> Clear</button>
+        <button class="fc" onclick="clearFilters()" style="margin-left:auto">✕ Clear</button>
       </div>
 
-      <!-- bulk bar -->
+      <!-- sel-badge — same position as test.html -->
+      <div id="sel-badge">✓ Selection mode — tap cards to select</div>
+
+      <!-- bulk bar — same structure as test-bulk.html -->
       <div id="bulk-bar" class="hidden">
         <span class="bulk-cnt" id="bulk-cnt">0 selected</span>
         <div class="bulk-sep"></div>
 
-        <!-- Complete -->
-        <button class="btn btn-ghost btn-sm" onclick="bulkDone()" title="Mark all complete">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <button class="btn btn-sm" onclick="bulkDone()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
           Complete
         </button>
 
-        <!-- Reopen -->
-        <button class="btn btn-ghost btn-sm" onclick="bulkReopen()" title="Mark all incomplete">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        <button class="btn btn-sm" onclick="bulkReopen()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
           Reopen
         </button>
 
         <div class="bulk-sep"></div>
 
-        <!-- Set Priority -->
-        <div class="bulk-priority-wrap" id="bulk-priority-wrap">
-          <button class="btn btn-ghost btn-sm" onclick="toggleBulkPriorityDD()" title="Set priority">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        <!-- Priority dropdown — exact test.html pattern -->
+        <div class="dd-wrap">
+          <button class="btn btn-sm" onclick="toggleDD('priority-dd')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
             Priority
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
           </button>
-          <div id="bulk-priority-dd">
-            <button onclick="bulkSetPriority('high')">  <span style="width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block"></span> High</button>
-            <button onclick="bulkSetPriority('medium')"><span style="width:8px;height:8px;border-radius:50%;background:#f59e0b;display:inline-block"></span> Medium</button>
-            <button onclick="bulkSetPriority('low')">   <span style="width:8px;height:8px;border-radius:50%;background:#10b981;display:inline-block"></span> Low</button>
-            <button onclick="bulkSetPriority('none')">  <span style="width:8px;height:8px;border-radius:50%;background:var(--border2);display:inline-block"></span> None</button>
+          <div class="dd-menu" id="priority-dd">
+            <button onclick="bulkSetPriority('high')">  <span style="width:9px;height:9px;border-radius:50%;background:#ef4444;display:inline-block;flex-shrink:0"></span> High</button>
+            <button onclick="bulkSetPriority('medium')"><span style="width:9px;height:9px;border-radius:50%;background:#f59e0b;display:inline-block;flex-shrink:0"></span> Medium</button>
+            <button onclick="bulkSetPriority('low')">   <span style="width:9px;height:9px;border-radius:50%;background:#10b981;display:inline-block;flex-shrink:0"></span> Low</button>
+            <button onclick="bulkSetPriority('none')">  <span style="width:9px;height:9px;border-radius:50%;background:var(--border2);display:inline-block;flex-shrink:0"></span> None</button>
           </div>
         </div>
 
-        <!-- Move to List -->
-        <div class="bulk-list-wrap" id="bulk-list-wrap">
-          <button class="btn btn-ghost btn-sm" onclick="toggleBulkListDD()" title="Move to list">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+        <!-- List dropdown — exact test.html pattern -->
+        <div class="dd-wrap">
+          <button class="btn btn-sm" onclick="toggleDD('list-dd')">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
             Move to
-            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
           </button>
-          <div id="bulk-list-dd" style="max-height:220px;overflow-y:auto">
+          <div class="dd-menu" id="list-dd" style="max-height:220px;overflow-y:auto">
             <!-- populated by renderBulkListDD() -->
           </div>
         </div>
 
         <div class="bulk-sep"></div>
 
-        <!-- Delete -->
-        <button class="btn btn-danger btn-sm" onclick="bulkDel()" title="Delete selected">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        <button class="btn btn-danger" onclick="bulkDel()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
           Delete
         </button>
 
-        <!-- Select / Deselect All -->
-        <button class="btn btn-ghost btn-sm" onclick="selectAll()" title="Select all visible tasks" style="margin-left:auto">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg>
+        <button class="btn btn-sm" onclick="selectAll()" style="margin-left:auto">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><polyline points="9 11 12 14 22 4"/></svg>
           All
         </button>
-        <button class="btn btn-ghost btn-sm" onclick="clearSel()" title="Clear selection">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        <button class="btn btn-sm" onclick="clearSel()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           None
         </button>
       </div>
@@ -585,38 +531,47 @@ body.focus-mode #focus-badge{display:flex}
       <div class="ta-header">
         <span class="ta-title" id="view-title">All Tasks</span>
         <span class="ta-count" id="view-cnt">—</span>
+        <span id="sel-hint" style="font-size:11px;color:var(--text3);margin-left:auto;display:none" class="sel-hint-text">
+          ☑ Hover &amp; click checkbox · Shift+click · Hold on mobile
+        </span>
       </div>
 
       <div id="task-list">
-        <div class="skel" style="height:68px"></div>
-        <div class="skel" style="height:68px;opacity:.6"></div>
-        <div class="skel" style="height:68px;opacity:.3"></div>
+        <div class="skel" style="height:60px"></div>
+        <div class="skel" style="height:60px;opacity:.6"></div>
+        <div class="skel" style="height:60px;opacity:.3"></div>
       </div>
-      <button class="add-inline" onclick="openModal(null)"><span class="ic" style="width:13px;height:13px;display:inline-flex;align-items:center;justify-content:center"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span> Add a task</button>
+      <button class="add-inline" onclick="openModal(null)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add a task
+      </button>
     </div>
   </main>
 </div>
 
-<!-- MODAL -->
 <!-- FAB -->
-<div id="sel-mode-badge">✓ Selection mode — tap cards to select</div>
-<button id="fab" onclick="openModal(null)" title="New task"><span class="ic" style="width:22px;height:22px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span></button>
+<button id="fab" onclick="openModal(null)" title="New task">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+</button>
 
-<!-- Focus mode badge -->
-<div id="focus-badge" onclick="toggleFocus()"><span class="ic" style="width:12px;height:12px"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/></svg></span> Focus mode — click to exit</div>
+<!-- Focus badge -->
+<div id="focus-badge" onclick="toggleFocus()">
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/></svg>
+  Focus mode — click to exit
+</div>
 
 <!-- Quick capture -->
 <div id="quick-capture">
-  <span class="ic" style="width:16px;height:16px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
   <input id="qc-input" placeholder="Quick capture — type and press Enter…" onkeydown="qcKey(event)"/>
-  <span class="qc-hint">Enter to save · Esc to close</span>
+  <span style="font-size:11px;color:var(--text3);white-space:nowrap">Enter · Esc</span>
 </div>
 
 <!-- Command Palette -->
-<div id="cmd-overlay" onclick="cmdOverlayClick(event)">
+<div id="cmd-overlay" onclick="if(event.target===this)closeCmd()">
   <div id="cmd-box">
     <div id="cmd-input-wrap">
-      <span class="ic" style="width:18px;height:18px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 3 3 0 0 0-3-3H6a3 3 0 0 0-3 3 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3h12a3 3 0 0 0 3-3 3 3 0 0 0-3-3z"/></svg></span>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
       <input id="cmd-input" placeholder="Search tasks, actions…" oninput="cmdSearch(this.value)" onkeydown="cmdKey(event)" autocomplete="off"/>
     </div>
     <div id="cmd-results"></div>
@@ -624,15 +579,19 @@ body.focus-mode #focus-badge{display:flex}
       <span class="cmd-hint"><span class="kbd">↑↓</span> navigate</span>
       <span class="cmd-hint"><span class="kbd">↵</span> select</span>
       <span class="cmd-hint"><span class="kbd">Esc</span> close</span>
+      <span class="cmd-hint" style="margin-left:auto;opacity:.6">Shift+click or hold card to multi-select</span>
     </div>
   </div>
 </div>
 
-<div class="overlay" id="overlay" onclick="overlayClick(event)">
+<!-- Task Modal -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal">
     <div class="mh">
       <h3 id="m-title">New Task</h3>
-      <button class="icon-btn" onclick="closeModal()"><span class="ic" style="width:16px;height:16px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></button>
+      <button class="icon-btn" onclick="closeModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     </div>
     <div class="mb">
       <div class="fg">
@@ -644,14 +603,14 @@ body.focus-mode #focus-badge{display:flex}
       </div>
       <div class="fr">
         <div class="fg"><label class="fl">Status</label>
-          <select class="sel" id="f-status">
+          <select class="fsel" id="f-status">
             <option value="todo">To Do</option>
             <option value="in-progress">In Progress</option>
             <option value="completed">Completed</option>
           </select>
         </div>
         <div class="fg"><label class="fl">Priority</label>
-          <select class="sel" id="f-priority">
+          <select class="fsel" id="f-priority">
             <option value="medium">Medium</option>
             <option value="high">High</option>
             <option value="low">Low</option>
@@ -660,12 +619,12 @@ body.focus-mode #focus-badge{display:flex}
       </div>
       <div class="fr">
         <div class="fg"><label class="fl">Due Date</label><input class="inp" type="datetime-local" id="f-due"/></div>
-        <div class="fg"><label class="fl">List</label><select class="sel" id="f-list"><option value="">No list</option></select></div>
+        <div class="fg"><label class="fl">List</label><select class="fsel" id="f-list"><option value="">No list</option></select></div>
       </div>
       <div class="fr">
         <div class="fg"><label class="fl">Reminder</label><input class="inp" type="datetime-local" id="f-rem"/></div>
         <div class="fg"><label class="fl">Recurring</label>
-          <select class="sel" id="f-recur">
+          <select class="fsel" id="f-recur">
             <option value="none">None</option>
             <option value="daily">Daily</option>
             <option value="weekly">Weekly</option>
@@ -680,11 +639,11 @@ body.focus-mode #focus-badge{display:flex}
       <div class="fg">
         <label class="fl">Subtasks</label>
         <div id="f-subs" style="display:flex;flex-direction:column;gap:5px"></div>
-        <button class="btn btn-ghost btn-sm" style="margin-top:4px;align-self:flex-start" onclick="addStRow()"><span class="ic" style="width:13px;height:13px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span> Add subtask</button>
+        <button class="btn btn-ghost btn-sm" style="margin-top:4px;align-self:flex-start" onclick="addStRow()">+ Add subtask</button>
       </div>
     </div>
     <div class="mf">
-      <button class="btn btn-ghost btn-sm" id="pin-btn" onclick="togglePin()"><span class="ic" style="width:13px;height:13px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24z"/></svg></span> Pin</button>
+      <button class="btn btn-ghost btn-sm" id="pin-btn" onclick="togglePin()">📌 Pin</button>
       <div style="display:flex;gap:8px">
         <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
         <button class="btn btn-primary" id="save-btn" onclick="saveTask()">Save Task</button>
@@ -693,31 +652,30 @@ body.focus-mode #focus-badge{display:flex}
   </div>
 </div>
 
-<!-- USER DROPDOWN -->
+<!-- User dropdown -->
 <div class="ddrop" id="ddrop">
-  <button class="dd-item" onclick="toggleTheme();closeDD()" id="theme-dd-btn"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></span> Toggle theme</button>
-  <button class="dd-item" onclick="closeDD()">⊟ Compact view</button>
+  <button class="dd-item" onclick="toggleTheme();closeUserDD()">🌙 Toggle theme</button>
   <div class="dd-sep"></div>
-  <button class="dd-item red" onclick="signOut()"><span class="ic" style="width:14px;height:14px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg></span> Sign out</button>
+  <button class="dd-item red" onclick="signOut()">⟵ Sign out</button>
 </div>
 
 <div id="toast"></div>
 
-<!-- TAG MANAGER MODAL -->
+<!-- Tag Manager Modal -->
 <div class="overlay" id="tag-overlay" onclick="if(event.target===this)closeTagManager()" style="z-index:200">
   <div class="modal" style="max-width:440px">
     <div class="mh">
       <h3>Manage Tags</h3>
-      <button class="icon-btn" onclick="closeTagManager()"><span class="ic" style="width:16px;height:16px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></button>
+      <button class="icon-btn" onclick="closeTagManager()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     </div>
     <div class="mb" style="gap:10px">
-      <!-- Create new tag -->
       <div style="display:flex;gap:8px;align-items:center;padding:12px;background:var(--bg2);border-radius:var(--r);border:1px solid var(--border)">
         <input id="new-tag-name" class="inp" placeholder="Tag name…" style="flex:1" onkeydown="if(event.key==='Enter')createTag()"/>
         <input id="new-tag-color" type="color" value="#6366f1" style="width:36px;height:34px;padding:2px;border:1px solid var(--border);border-radius:var(--r);cursor:pointer;background:var(--bg)"/>
         <button class="btn btn-primary btn-sm" onclick="createTag()">Add</button>
       </div>
-      <!-- Existing tags -->
       <div id="tag-list-modal" style="display:flex;flex-direction:column;gap:6px;max-height:300px;overflow-y:auto"></div>
     </div>
   </div>
@@ -725,132 +683,50 @@ body.focus-mode #focus-badge{display:flex}
 
 <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script>
-// ══════════════════════════════════════════════
+// ══════════════════════════════════════
 // CONFIG
-// ══════════════════════════════════════════════
+// ══════════════════════════════════════
 const SUPA_URL = 'https://ilsbnkwcqxiijiyrljfi.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imlsc2Jua3djcXhpaWppeXJsamZpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MDQzMTcsImV4cCI6MjA4Nzk4MDMxN30.trrsgMaSG7hgq-rpzcUJyqffR8AjOvyfdaSEoeRj_a4';
-// ══════════════════════════════════════════════
 
 const sb = supabase.createClient(SUPA_URL, SUPA_KEY, {
-  auth: {
-    storage: window.localStorage,
-    storageKey: 'planup-auth',
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true,
-  }
+  auth:{ storage:localStorage, storageKey:'planup-auth', autoRefreshToken:true, persistSession:true, detectSessionInUrl:true }
 });
 
-// ── State ─────────────────────────────────────
-let USER    = null;   // set once in boot, never changes
-let tasks   = [];
-let lists   = [];
-let tags    = [];
-let selIds  = new Set();
-let filters = { search:'', status:'', priority:'' };
-let view    = 'all';
+// ── State ──
+let USER = null;
+let tasks = [], lists = [], tags = [];
+let selIds = new Set();
+let selMode = false;
+let pressTimer = null;
+let filters = { search:'', status:'', priority:'', tagId:null };
+let view = 'all';
 let activeList = null;
-let editId  = null;
-let pinned  = false;
+let editId = null;
+let isPinned = false;
 let selTags = new Set();
+let sortMode = 'default';
+let focusMode = false;
+let cmdIdx = -1, cmdItems = [];
 
-// ══════════════════════════════════════════════
+// ══════════════════════════════════════
 // BOOT
-// ══════════════════════════════════════════════
-
-// ══════════════════════════════════════════════
-// NOTIFICATIONS
-// ══════════════════════════════════════════════
-let _reminderTimers = [];
-
-async function requestNotifPermission() {
-  if (!('Notification' in window)) return;
-  if (Notification.permission === 'default') {
-    await Notification.requestPermission();
-  }
-}
-
-function scheduleReminders() {
-  // Clear existing timers
-  _reminderTimers.forEach(t => clearTimeout(t));
-  _reminderTimers = [];
-
-  if (!('Notification' in window) || Notification.permission !== 'granted') return;
-
-  const now = Date.now();
-  tasks.forEach(task => {
-    if (!task.reminder || task.status === 'completed') return;
-    const remTime = new Date(task.reminder).getTime();
-    const delay = remTime - now;
-    if (delay < 0 || delay > 7 * 24 * 60 * 60 * 1000) return; // skip past or >7 days away
-
-    const timer = setTimeout(() => {
-      const n = new Notification('PlanUp — ' + task.title, {
-        body: task.due_date
-          ? 'Due ' + new Date(task.due_date).toLocaleDateString(undefined, {weekday:'short',month:'short',day:'numeric'})
-          : 'Tap to open PlanUp',
-        icon: '/favicon.ico',
-        tag:  task.id, // prevents duplicate notifications for same task
-        requireInteraction: task.priority === 'high',
-      });
-      n.onclick = () => { window.focus(); openModal(task.id); n.close(); };
-    }, delay);
-
-    _reminderTimers.push(timer);
-  });
-
-  if (_reminderTimers.length > 0) {
-    console.log('[PlanUp] Scheduled', _reminderTimers.length, 'reminder(s)');
-  }
-}
-
-function showNotifPrompt() {
-  if (!('Notification' in window)) return;
-  if (Notification.permission !== 'default') return; // already decided
-  // Show a soft in-app prompt instead of hitting the browser cold
-  const bar = document.createElement('div');
-  bar.id = 'notif-prompt';
-  bar.innerHTML = `
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-    <span>Enable reminders to get notified when tasks are due</span>
-    <button onclick="requestNotifPermission().then(()=>{scheduleReminders();this.closest('#notif-prompt').remove()})" class="btn btn-primary btn-sm">Enable</button>
-    <button onclick="this.closest('#notif-prompt').remove()" class="btn btn-ghost btn-sm">Not now</button>
-  `;
-  bar.style.cssText = `
-    position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
-    display:flex;align-items:center;gap:10px;
-    background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r2);
-    padding:12px 16px;box-shadow:var(--sh3);z-index:500;
-    font-size:13px;color:var(--text2);max-width:480px;width:calc(100% - 32px);
-    animation:slideUp .3s ease;
-  `;
-  document.body.appendChild(bar);
-  // Auto dismiss after 12s
-  setTimeout(() => bar.remove(), 12000);
-}
-
+// ══════════════════════════════════════
 async function boot() {
-  // theme
-  const savedTheme = localStorage.getItem('pu-theme') || 'dark';
-  document.documentElement.setAttribute('data-theme', savedTheme);
-  // get session
-  const { data:{ session }, error:sErr } = await sb.auth.getSession();
-  if (sErr || !session) return redirect();
+  const saved = localStorage.getItem('pu-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
 
-  // store user from session — this is the authoritative user_id
+  const { data:{ session }, error } = await sb.auth.getSession();
+  if (error || !session) { redirect(); return; }
   USER = session.user;
 
-  // show user in sidebar
   const name = USER.user_metadata?.full_name || USER.email.split('@')[0];
   const init = name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
   q('u-av').textContent = init;
   q('u-nm').textContent = name;
   q('u-em').textContent = USER.email;
 
-  // load data
   await loadAll();
-  // ask for notification permission softly after 2s
   setTimeout(showNotifPrompt, 2000);
 }
 
@@ -859,96 +735,106 @@ async function loadAll() {
   tasks = t; lists = l; tags = g;
   renderSidebar();
   renderTasks();
-  scheduleReminders();
   updateCounts();
+  scheduleReminders();
 }
 
 async function loadTasks() {
   const { data, error } = await sb.from('tasks')
-    .select('*, list:lists(id,name,color,icon), subtasks(id,title,completed,position), task_tags(tag:tags(id,name,color))')
+    .select('*, subtasks(id,title,completed,position), task_tags(tag:tags(id,name,color))')
     .order('pinned', { ascending:false })
     .order('position');
   if (error) { showToast('Error loading tasks','err'); return []; }
   return data || [];
 }
-
 async function loadLists() {
   const { data } = await sb.from('lists').select('*').order('position');
   return data || [];
 }
-
 async function loadTags() {
   const { data } = await sb.from('tags').select('*').order('name');
   return data || [];
 }
 
-// ══════════════════════════════════════════════
+// ══════════════════════════════════════
 // SIDEBAR
-// ══════════════════════════════════════════════
-function renderSidebar() { /* called after */
-  // lists
+// ══════════════════════════════════════
+function renderSidebar() {
   q('s-lists').innerHTML = lists.map(l => {
     const cnt = tasks.filter(t=>t.list_id===l.id).length;
-    return `<button class="s-item${activeList===l.id?' on':''}" onclick="setList('${l.id}')">
-      <span class="dot" style="background:${l.color}"></span>
-      <span class="lbl">${x(l.name)}</span>
-      <span class="cnt">${cnt}</span>
-    </button>`;
+    return `<div class="s-item-wrap" style="position:relative;display:flex;align-items:center">
+      <button class="s-item${activeList===l.id?' on':''}" onclick="setList('${l.id}')" style="flex:1;min-width:0">
+        <span class="dot" style="background:${l.color}"></span>
+        <span class="lbl">${x(l.name)}</span>
+        <span class="cnt">${cnt}</span>
+      </button>
+      <button class="s-del-btn" onclick="deleteList('${l.id}')" title="Delete list">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>`;
   }).join('');
 
-  // tags
-  // tags
   q('s-tags').innerHTML = !tags.length
-    ? `<div style="padding:4px 16px;font-size:12px;color:var(--text3)">No tags</div>`
-    : tags.map(t=>`<button class="s-item" onclick="filterTag('${t.id}')">
-        <span class="dot" style="background:${t.color}"></span>
-        <span class="lbl">${x(t.name)}</span>
-      </button>`).join('');
+    ? `<div style="padding:4px 16px;font-size:12px;color:var(--text3)">No tags yet</div>`
+    : tags.map(t=>`<div class="s-item-wrap" style="position:relative;display:flex;align-items:center">
+        <button class="s-item" onclick="filterTag('${t.id}')" style="flex:1;min-width:0">
+          <span class="dot" style="background:${t.color}"></span>
+          <span class="lbl">${x(t.name)}</span>
+        </button>
+        <button class="s-del-btn" onclick="deleteTag('${t.id}')" title="Delete tag">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>`).join('');
 }
 
 function updateCounts() {
-  const now  = new Date();
-  const tod  = new Date(); tod.setHours(0,0,0,0);
-  const tom  = new Date(tod); tom.setDate(tom.getDate()+1);
-  const nwk  = new Date(tod); nwk.setDate(nwk.getDate()+7);
-  const inc  = t => t.status !== 'completed';
-  const due  = t => t.due_date && new Date(t.due_date);
+  const tod = new Date(); tod.setHours(0,0,0,0);
+  const tom = new Date(tod); tom.setDate(tom.getDate()+1);
+  const nwk = new Date(tod); nwk.setDate(nwk.getDate()+7);
+  const inc = t => t.status !== 'completed';
+  const due = t => t.due_date && new Date(t.due_date);
   q('c-all').textContent      = tasks.filter(inc).length;
   q('c-today').textContent    = tasks.filter(t=>inc(t)&&due(t)>=tod&&due(t)<tom).length;
   q('c-upcoming').textContent = tasks.filter(t=>inc(t)&&due(t)>=tom&&due(t)<=nwk).length;
   q('c-overdue').textContent  = tasks.filter(t=>inc(t)&&t.due_date&&new Date(t.due_date)<tod).length;
 }
 
-// ══════════════════════════════════════════════
+// ══════════════════════════════════════
 // RENDER TASKS
-// ══════════════════════════════════════════════
+// ══════════════════════════════════════
 function getVisible() {
   let list = [...tasks];
   const tod = new Date(); tod.setHours(0,0,0,0);
   const tom = new Date(tod); tom.setDate(tom.getDate()+1);
   const nwk = new Date(tod); nwk.setDate(nwk.getDate()+7);
 
-  if (activeList) list = list.filter(t=>t.list_id===activeList);
+  if (activeList)         list = list.filter(t=>t.list_id===activeList);
   if (view==='today')    list = list.filter(t=>t.due_date&&new Date(t.due_date)>=tod&&new Date(t.due_date)<tom);
   if (view==='upcoming') list = list.filter(t=>t.due_date&&new Date(t.due_date)>=tom&&new Date(t.due_date)<=nwk);
   if (view==='overdue')  list = list.filter(t=>t.status!=='completed'&&t.due_date&&new Date(t.due_date)<tod);
-  if (filters.search)   list = list.filter(t=>(t.title+' '+(t.description||'')).toLowerCase().includes(filters.search.toLowerCase()));
-  if (filters.status)   list = list.filter(t=>t.status===filters.status);
-  if (filters.priority) list = list.filter(t=>t.priority===filters.priority);
-  if (filters.tagId)    list = list.filter(t=>(t.task_tags||[]).some(tt=>tt.tag?.id===filters.tagId));
+  if (filters.search)    list = list.filter(t=>(t.title+' '+(t.description||'')).toLowerCase().includes(filters.search.toLowerCase()));
+  if (filters.status)    list = list.filter(t=>t.status===filters.status);
+  if (filters.priority)  list = list.filter(t=>t.priority===filters.priority);
+  if (filters.tagId)     list = list.filter(t=>(t.task_tags||[]).some(tt=>tt.tag?.id===filters.tagId));
 
-  // ── Pinned tasks always float to top ──────────────────────
-  list.sort((a,b) => {
-    if (a.pinned && !b.pinned) return -1;
-    if (!a.pinned && b.pinned) return 1;
-    // Within same pin group: incomplete before done, then by position
-    if (a.status==='completed' && b.status!=='completed') return 1;
-    if (a.status!=='completed' && b.status==='completed') return -1;
-    return (a.position||0) - (b.position||0);
+  // Sort
+  list.sort((a,b)=>{
+    if (a.pinned&&!b.pinned) return -1;
+    if (!a.pinned&&b.pinned) return 1;
+    const priO = {high:0,medium:1,low:2,none:3};
+    if (sortMode==='priority') return (priO[a.priority]||1)-(priO[b.priority]||1);
+    if (sortMode==='due') {
+      if (!a.due_date&&!b.due_date) return 0;
+      if (!a.due_date) return 1;
+      if (!b.due_date) return -1;
+      return new Date(a.due_date)-new Date(b.due_date);
+    }
+    if (sortMode==='alpha') return (a.title||'').localeCompare(b.title||'');
+    if (sortMode==='created') return new Date(b.created_at||0)-new Date(a.created_at||0);
+    if (a.status==='completed'&&b.status!=='completed') return 1;
+    if (a.status!=='completed'&&b.status==='completed') return -1;
+    return (a.position||0)-(b.position||0);
   });
-
-  // Apply sort mode (pinned already floated above)
-  if (typeof applySortMode === 'function') return applySortMode(list);
   return list;
 }
 
@@ -958,89 +844,82 @@ function renderTasks() {
   q('view-cnt').textContent = list.length+' task'+(list.length!==1?'s':'');
 
   if (!list.length) {
-    q('task-list').innerHTML = `<div class="empty"><div class="empty-ic"><span class="ic" style="width:40px;height:40px"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></span></div><h3>No tasks here</h3><p>Create a new task to get started</p></div>`;
+    q('task-list').innerHTML = `<div class="empty"><div style="font-size:2rem;opacity:.4">✓</div><h3>No tasks here</h3><p>Create a new task to get started</p></div>`;
     return;
   }
 
-  const pinned_tasks = list.filter(t=>t.pinned);
-  const other_tasks  = list.filter(t=>!t.pinned);
+  const pinned = list.filter(t=>t.pinned);
+  const others = list.filter(t=>!t.pinned);
 
-  function renderCard(t,i) {
-    const done  = t.status==='completed';
-    const over  = !done && t.due_date && new Date(t.due_date)<new Date();
-    const subs  = t.subtasks||[];
+  function cardHTML(t, i) {
+    const done = t.status==='completed';
+    const over = !done && t.due_date && new Date(t.due_date)<new Date();
+    const subs = t.subtasks||[];
     const dSubs = subs.filter(s=>s.completed).length;
-    const tgs   = (t.task_tags||[]).map(tt=>tt.tag).filter(Boolean);
-    const cls   = ['card',done?'done':'',t.pinned?'pinned':'',over?'overdue':'',selIds.has(t.id)?'sel':''].filter(Boolean).join(' ');
-    return `<div class="${cls}" data-p="${t.priority}" data-id="${t.id}"
-                 style="animation-delay:${i*20}ms"
-                 onclick="cardClick(event,'${t.id}')"
-                 onpointerdown="onCardPointerDown(event,'${t.id}')"
-                 onpointerup="onCardPointerUp(event)"
-                 onpointercancel="onCardPointerCancel(event)">
-      <div class="card-check"></div>
-      <div class="cb${done?' on':''}" onclick="event.stopPropagation();toggle('${t.id}','${t.status}')"></div>
+    const tgs = (t.task_tags||[]).map(tt=>tt.tag).filter(Boolean);
+    const sel = selIds.has(t.id);
+    const cls = ['card', done?'done':'', t.pinned?'pinned':'', over?'overdue':'', sel?'sel':''].filter(Boolean).join(' ');
+
+    return `<div class="${cls}" data-p="${t.priority}" data-id="${t.id}" style="animation-delay:${i*20}ms"
+      onclick="cardClick(event,'${t.id}')"
+      onpointerdown="pointerDown(event,'${t.id}')"
+      onpointerup="pointerUp(event)"
+      onpointercancel="pointerUp(event)">
+      <div class="card-check" onclick="event.stopPropagation();checkClick('${t.id}')"></div>
       <div class="cbody">
         <div class="ctitle">${x(t.title)}</div>
         ${t.description?`<div class="cdesc">${x(t.description)}</div>`:''}
         <div class="cmeta">
           <span class="badge b-${t.priority}">${t.priority}</span>
           ${t.due_date?`<span class="cdue"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> ${rt(t.due_date)}</span>`:''}
-          ${subs.length?`<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--text3);cursor:pointer" onclick="event.stopPropagation();toggleSubsExpand('${t.id}')">
+          ${subs.length?`<span style="display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--text3)">
             <div class="pbar" style="width:44px"><div class="pfill${dSubs===subs.length?' g':''}" style="width:${Math.round(dSubs/subs.length*100)}%"></div></div>
-            ${dSubs}/${subs.length} subtask${subs.length!==1?'s':''}</span>`:''}
+            ${dSubs}/${subs.length}</span>`:''}
           ${tgs.map(tg=>`<span class="badge" style="background:${tg.color}22;color:${tg.color};cursor:pointer" onclick="event.stopPropagation();filterTag('${tg.id}')">${x(tg.name)}</span>`).join('')}
-          ${t.pinned?`<span style='color:var(--amber);display:inline-flex;align-items:center'><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24z"/></svg></span>`:''}
+          ${t.pinned?`<span style="color:var(--amber);font-size:10px">📌</span>`:''}
         </div>
-        ${subs.length?`<div id="subs-${t.id}" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:4px">
+        ${subs.length?`<div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:4px">
           ${subs.sort((a,b)=>a.position-b.position).map(s=>`
             <div style="display:flex;align-items:center;gap:7px" onclick="event.stopPropagation()">
-              <div class="cb${s.completed?' on':''}" style="width:14px;height:14px;border-radius:3px;flex-shrink:0"
-                   onclick="toggleSubtask('${t.id}','${s.id}',${s.completed})"></div>
+              <div class="cb${s.completed?' on':''}" style="width:14px;height:14px;border-radius:3px;flex-shrink:0" onclick="toggleSubtask('${t.id}','${s.id}',${s.completed})"></div>
               <span style="font-size:12px;${s.completed?'text-decoration:line-through;opacity:.45':''}color:var(--text2)">${x(s.title)}</span>
             </div>`).join('')}
         </div>`:''}
       </div>
       <div class="cactions">
-        <button class="icon-btn" onclick="event.stopPropagation();openModal('${t.id}')" title="Edit"><span class="ic" style="width:15px;height:15px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg></span></button>
-        <button class="icon-btn ${t.pinned?'pin-active':''}" onclick="event.stopPropagation();doPin('${t.id}',${t.pinned})" title="${t.pinned?'Unpin':'Pin'}"><span class="ic" style="width:15px;height:15px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24z"/></svg></span></button>
-        <button class="icon-btn" onclick="event.stopPropagation();doDelete('${t.id}')" title="Delete"><span class="ic" style="width:15px;height:15px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></span></button>
+        <button class="icon-btn" onclick="event.stopPropagation();openModal('${t.id}')" title="Edit">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><path d="m15 5 4 4"/></svg>
+        </button>
+        <button class="icon-btn${t.pinned?' pin-active':''}" onclick="event.stopPropagation();doPin('${t.id}',${t.pinned})" title="${t.pinned?'Unpin':'Pin'}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24z"/></svg>
+        </button>
+        <button class="icon-btn" onclick="event.stopPropagation();doDelete('${t.id}')" title="Delete">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+        </button>
       </div>
     </div>`;
   }
 
   let html = '';
-
-  // Pinned section
-  if (pinned_tasks.length) {
-    html += `<div class="section-divider">
-      <span class="section-divider-ic"><span class="ic" style="width:11px;height:11px"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24z"/></svg></span></span>
-      <span class="section-divider-lbl">Pinned</span>
-    </div>`;
-    html += pinned_tasks.map((t,i) => renderCard(t,i)).join('');
-    if (other_tasks.length) {
-      html += `<div class="section-divider" style="margin-top:8px">
-        <span class="section-divider-lbl">Other tasks</span>
-      </div>`;
-    }
+  if (pinned.length) {
+    html += `<div class="section-divider"><span class="section-divider-lbl">📌 Pinned</span></div>`;
+    html += pinned.map((t,i)=>cardHTML(t,i)).join('');
+    if (others.length) html += `<div class="section-divider" style="margin-top:8px"><span class="section-divider-lbl">Other tasks</span></div>`;
   }
-
-  html += other_tasks.map((t,i) => renderCard(t, pinned_tasks.length+i)).join('');
+  html += others.map((t,i)=>cardHTML(t, pinned.length+i)).join('');
   q('task-list').innerHTML = html;
+  // Show selection hint
+  const hint = document.getElementById('sel-hint');
+  if (hint) hint.style.display = html ? '' : 'none';
 }
 
-// ══════════════════════════════════════════════
-// TASK ACTIONS
-// ══════════════════════════════════════════════
-// ── Selection mode (exact match to test-bulk.html) ──
-let selMode = false;
-let _pressTimer = null;
-
+// ══════════════════════════════════════
+// SELECTION — exact same logic as test-bulk.html
+// ══════════════════════════════════════
 function enterSelMode() {
   selMode = true;
   document.body.classList.add('sel-mode');
 }
-
 function exitSelMode() {
   selMode = false;
   selIds.clear();
@@ -1048,43 +927,117 @@ function exitSelMode() {
   updateBulk();
   renderTasks();
 }
-
 function toggleSel(id) {
   selIds.has(id) ? selIds.delete(id) : selIds.add(id);
-  if (selIds.size === 0) { selMode = false; document.body.classList.remove('sel-mode'); }
+  if (selIds.size===0) { selMode=false; document.body.classList.remove('sel-mode'); }
   updateBulk();
   renderTasks();
 }
+function selectAll() {
+  if (!selMode) enterSelMode();
+  getVisible().forEach(t=>selIds.add(t.id));
+  updateBulk(); renderTasks();
+}
+function clearSel() { exitSelMode(); }
 
+function updateBulk() {
+  const n = selIds.size;
+  q('bulk-bar').classList.toggle('hidden', n===0);
+  if (n>0) q('bulk-cnt').textContent = n+' task'+(n===1?'':'s')+' selected';
+  renderBulkListDD();
+}
+
+// checkClick — clicking the card-check box directly
+function checkClick(id) {
+  if (!selMode) enterSelMode();
+  toggleSel(id);
+}
+
+// Card click — exact same logic as test-bulk.html
 function cardClick(e, id) {
   if (e.shiftKey) { if (!selMode) enterSelMode(); toggleSel(id); return; }
   if (selMode)    { toggleSel(id); return; }
   openModal(id);
 }
 
-function onCardPointerDown(e, id) {
-  if (e.pointerType === 'mouse') return;
-  const el = document.querySelector('[data-id="'+id+'"]');
+// Long press — exact same logic as test-bulk.html
+function pointerDown(e, id) {
+  if (e.pointerType==='mouse') return;
+  const el = document.querySelector(`[data-id="${id}"]`);
   if (el) el.classList.add('pressing');
-  _pressTimer = setTimeout(() => {
-    document.querySelectorAll('.pressing').forEach(el => el.classList.remove('pressing'));
+  pressTimer = setTimeout(()=>{
+    document.querySelectorAll('.pressing').forEach(el=>el.classList.remove('pressing'));
     if (navigator.vibrate) navigator.vibrate(40);
     if (!selMode) enterSelMode();
     toggleSel(id);
-    _pressTimer = null;
+    pressTimer = null;
   }, 500);
 }
-
-function onCardPointerUp(e) {
-  if (_pressTimer) { clearTimeout(_pressTimer); _pressTimer = null; }
-  document.querySelectorAll('.pressing').forEach(el => el.classList.remove('pressing'));
+function pointerUp(e) {
+  if (pressTimer) { clearTimeout(pressTimer); pressTimer=null; }
+  document.querySelectorAll('.pressing').forEach(el=>el.classList.remove('pressing'));
 }
 
-function onCardPointerCancel(e) {
-  if (_pressTimer) { clearTimeout(_pressTimer); _pressTimer = null; }
-  document.querySelectorAll('.pressing').forEach(el => el.classList.remove('pressing'));
+// ══════════════════════════════════════
+// BULK ACTIONS
+// ══════════════════════════════════════
+async function bulkDone() {
+  const ids = [...selIds];
+  await Promise.all(ids.map(id=>sb.from('tasks').update({status:'completed'}).eq('id',id).eq('user_id',USER.id)));
+  tasks = await loadTasks(); exitSelMode(); renderTasks(); updateCounts();
+  showToast(ids.length+' tasks completed');
+}
+async function bulkReopen() {
+  const ids = [...selIds];
+  await Promise.all(ids.map(id=>sb.from('tasks').update({status:'todo'}).eq('id',id).eq('user_id',USER.id)));
+  tasks = await loadTasks(); exitSelMode(); renderTasks(); updateCounts();
+  showToast(ids.length+' tasks reopened');
+}
+async function bulkSetPriority(priority) {
+  const ids = [...selIds];
+  await Promise.all(ids.map(id=>sb.from('tasks').update({priority}).eq('id',id).eq('user_id',USER.id)));
+  closeAllDD(); tasks = await loadTasks(); renderTasks();
+  showToast(ids.length+' tasks → '+priority+' priority');
+}
+async function bulkMoveToList(listId) {
+  const ids = [...selIds];
+  await Promise.all(ids.map(id=>sb.from('tasks').update({list_id:listId}).eq('id',id).eq('user_id',USER.id)));
+  closeAllDD(); tasks = await loadTasks(); exitSelMode(); renderTasks(); updateCounts(); renderSidebar();
+  const name = listId ? (lists.find(l=>l.id===listId)?.name||'list') : 'No list';
+  showToast(ids.length+' tasks → '+name);
+}
+async function bulkDel() {
+  const ids = [...selIds];
+  if (!confirm('Delete '+ids.length+' task'+(ids.length===1?'':'s')+'?')) return;
+  await sb.from('tasks').delete().in('id',ids).eq('user_id',USER.id);
+  tasks = await loadTasks(); exitSelMode(); renderTasks(); updateCounts();
+  showToast(ids.length+' tasks deleted');
 }
 
+function renderBulkListDD() {
+  const dd = q('list-dd');
+  if (!dd) return;
+  dd.innerHTML = `<button onclick="bulkMoveToList(null)"><span style="width:9px;height:9px;border-radius:50%;background:var(--border2);display:inline-block;flex-shrink:0"></span> No list</button>`
+    + lists.map(l=>`<button onclick="bulkMoveToList('${l.id}')"><span style="width:9px;height:9px;border-radius:50%;background:${l.color};display:inline-block;flex-shrink:0"></span> ${x(l.name)}</button>`).join('');
+}
+
+// ── Dropdowns — exact same as test-bulk.html ──
+function toggleDD(id) {
+  const el = document.getElementById(id);
+  const wasOpen = el.classList.contains('open');
+  closeAllDD();
+  if (!wasOpen) el.classList.add('open');
+}
+function closeAllDD() {
+  document.querySelectorAll('.dd-menu').forEach(el=>el.classList.remove('open'));
+}
+document.addEventListener('click', e=>{
+  if (!e.target.closest('.dd-wrap')) closeAllDD();
+});
+
+// ══════════════════════════════════════
+// TASK ACTIONS
+// ══════════════════════════════════════
 async function toggle(id, cur) {
   const next = cur==='completed'?'todo':'completed';
   tasks = tasks.map(t=>t.id===id?{...t,status:next}:t);
@@ -1107,127 +1060,36 @@ async function doDelete(id) {
   showToast('Task deleted');
 }
 
-function updateBulk() {
-  const n = selIds.size;
-  document.getElementById('bulk-bar').classList.toggle('hidden', n===0);
-  if (n > 0) q('bulk-cnt').textContent = n + ' task' + (n===1?'':'s') + ' selected';
-  renderBulkListDD();
-}
-
-function clearSel() { exitSelMode(); }
-
-function selectAll() {
-  if (!selMode) enterSelMode();
-  getVisible().forEach(t => selIds.add(t.id));
-  updateBulk();
+async function toggleSubtask(taskId, subtaskId, current) {
+  const done = !current;
+  tasks = tasks.map(t=>{
+    if (t.id!==taskId) return t;
+    return {...t, subtasks:(t.subtasks||[]).map(s=>s.id===subtaskId?{...s,completed:done}:s)};
+  });
   renderTasks();
+  await sb.from('subtasks').update({completed:done}).eq('id',subtaskId);
 }
 
-// ── Bulk complete ──
-async function bulkDone() {
-  const ids = [...selIds];
-  await Promise.all(ids.map(id => sb.from('tasks').update({status:'completed'}).eq('id',id).eq('user_id',USER.id)));
-  tasks = await loadTasks();
-  selIds.clear(); updateBulk(); renderTasks(); updateCounts();
-  showToast(ids.length + ' tasks marked complete');
-}
-
-// ── Bulk reopen ──
-async function bulkReopen() {
-  const ids = [...selIds];
-  await Promise.all(ids.map(id => sb.from('tasks').update({status:'todo'}).eq('id',id).eq('user_id',USER.id)));
-  tasks = await loadTasks();
-  selIds.clear(); updateBulk(); renderTasks(); updateCounts();
-  showToast(ids.length + ' tasks reopened');
-}
-
-// ── Bulk set priority ──
-function closeAllBulkDD() {
-  q('bulk-priority-dd')?.classList.remove('open');
-  q('bulk-list-dd')?.classList.remove('open');
-}
-function toggleBulkPriorityDD() {
-  const dd = q('bulk-priority-dd');
-  const wasOpen = dd.classList.contains('open');
-  closeAllBulkDD();
-  if (!wasOpen) dd.classList.add('open');
-}
-async function bulkSetPriority(priority) {
-  const ids = [...selIds];
-  await Promise.all(ids.map(id => sb.from('tasks').update({priority}).eq('id',id).eq('user_id',USER.id)));
-  q('bulk-priority-dd').classList.remove('open');
-  tasks = await loadTasks();
-  renderTasks(); updateCounts();
-  showToast(ids.length + ' tasks set to ' + priority + ' priority');
-}
-
-// ── Bulk move to list ──
-function renderBulkListDD() {
-  const dd = q('bulk-list-dd');
-  if (!dd) return;
-  const noListBtn = `<button onclick="bulkMoveToList(null)">
-    <span class="bulk-list-dot" style="background:var(--border2)"></span> No list
-  </button>`;
-  const listBtns = lists.map(l => `<button onclick="bulkMoveToList('${l.id}')">
-    <span class="bulk-list-dot" style="background:${l.color}"></span> ${l.name}
-  </button>`).join('');
-  dd.innerHTML = noListBtn + listBtns;
-}
-function toggleBulkListDD() {
-  const dd = q('bulk-list-dd');
-  const wasOpen = dd.classList.contains('open');
-  closeAllBulkDD();
-  if (!wasOpen) dd.classList.add('open');
-}
-async function bulkMoveToList(listId) {
-  const ids = [...selIds];
-  await Promise.all(ids.map(id => sb.from('tasks').update({list_id: listId}).eq('id',id).eq('user_id',USER.id)));
-  q('bulk-list-dd').classList.remove('open');
-  tasks = await loadTasks();
-  selIds.clear(); updateBulk(); renderTasks(); updateCounts();
-  const listName = listId ? (lists.find(l=>l.id===listId)?.name||'list') : 'No list';
-  showToast(ids.length + ' tasks moved to ' + listName);
-}
-
-// ── Bulk delete ──
-async function bulkDel() {
-  const ids = [...selIds];
-  if (!confirm('Delete ' + ids.length + ' task' + (ids.length===1?'':'s') + '? This cannot be undone.')) return;
-  await sb.from('tasks').delete().in('id', ids).eq('user_id', USER.id);
-  tasks = await loadTasks();
-  selIds.clear(); updateBulk(); renderTasks(); updateCounts();
-  showToast(ids.length + ' tasks deleted');
-}
-
-// Close bulk dropdowns when clicking outside
-document.addEventListener('click', e => {
-  if (!e.target.closest('#bulk-priority-wrap') && !e.target.closest('#bulk-list-wrap')) {
-    closeAllBulkDD?.();
-  }
-});
-
-// ══════════════════════════════════════════════
+// ══════════════════════════════════════
 // MODAL
-// ══════════════════════════════════════════════
+// ══════════════════════════════════════
 function openModal(id) {
-  editId=id; pinned=false; selTags=new Set();
+  editId=id; isPinned=false; selTags=new Set();
   resetForm(); fillLists();
-
   if (id) {
     const t = tasks.find(t=>t.id===id);
     if (!t) return;
-    q('m-title').textContent   = 'Edit Task';
-    q('save-btn').textContent  = 'Save Changes';
-    q('f-title').value         = t.title||'';
-    q('f-desc').value          = t.description||'';
-    q('f-status').value        = t.status||'todo';
-    q('f-priority').value      = t.priority||'medium';
-    q('f-list').value          = t.list_id||'';
-    q('f-recur').value         = t.recurring||'none';
+    q('m-title').textContent  = 'Edit Task';
+    q('save-btn').textContent = 'Save Changes';
+    q('f-title').value        = t.title||'';
+    q('f-desc').value         = t.description||'';
+    q('f-status').value       = t.status||'todo';
+    q('f-priority').value     = t.priority||'medium';
+    q('f-list').value         = t.list_id||'';
+    q('f-recur').value        = t.recurring||'none';
     if (t.due_date) q('f-due').value = toLocal(t.due_date);
     if (t.reminder) q('f-rem').value = toLocal(t.reminder);
-    pinned = !!t.pinned;
-    // ✅ Set selTags FIRST, then render tags so selections show correctly
+    isPinned = !!t.pinned;
     selTags = new Set((t.task_tags||[]).map(tt=>tt.tag?.id).filter(Boolean));
     (t.subtasks||[]).sort((a,b)=>a.position-b.position).forEach(s=>addStRow(s));
   } else {
@@ -1235,16 +1097,13 @@ function openModal(id) {
     q('save-btn').textContent = 'Save Task';
     if (activeList) q('f-list').value = activeList;
   }
-
-  // Always fill tags AFTER selTags is set
   fillTags();
   updPin();
   q('overlay').classList.add('on');
-  setTimeout(()=>q('f-title').focus(),100);
+  setTimeout(()=>q('f-title').focus(), 100);
 }
 
 function closeModal() { q('overlay').classList.remove('on'); }
-function overlayClick(e) { if (e.target===q('overlay')) closeModal(); }
 
 function resetForm() {
   ['f-title','f-desc','f-due','f-rem'].forEach(id=>{const el=q(id);if(el)el.value='';});
@@ -1255,83 +1114,56 @@ function resetForm() {
 }
 
 function fillLists() {
-  q('f-list').innerHTML = '<option value="">No list</option>' +
+  q('f-list').innerHTML = '<option value="">No list</option>'+
     lists.map(l=>`<option value="${l.id}">${x(l.name)}</option>`).join('');
 }
 
 function fillTags() {
   const c = q('f-tags');
   if (!tags.length) {
-    c.innerHTML = `<button type="button" onclick="closeModal();openTagManager()"
-      style="font-size:12px;color:var(--accent);background:var(--accent-light);border:1px dashed var(--accent);
-             border-radius:99px;padding:3px 10px;cursor:pointer;font-family:inherit">
-      <span class="ic" style="width:12px;height:12px;display:inline-flex;align-items:center;justify-content:center"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span> Create your first tag
-    </button>`;
+    c.innerHTML = `<button type="button" onclick="closeModal();openTagManager()" style="font-size:12px;color:var(--accent);background:var(--accent-light);border:1px dashed var(--accent);border-radius:99px;padding:3px 10px;cursor:pointer;font-family:inherit">+ Create your first tag</button>`;
     return;
   }
   c.innerHTML = tags.map(t=>{
     const on = selTags.has(t.id);
-    return `<button type="button" class="tag-btn" id="tb-${t.id}"
-      style="${on ? `background:${t.color}22;color:${t.color};border-color:${t.color};font-weight:600` : ''}"
-      onclick="toggleTag('${t.id}','${t.color}')">
+    return `<button type="button" class="tag-btn" style="${on?`background:${t.color}22;color:${t.color};border-color:${t.color};font-weight:600`:''}" onclick="toggleTag('${t.id}')">
       <span style="width:7px;height:7px;border-radius:50%;background:${t.color};display:inline-block;margin-right:4px;flex-shrink:0"></span>
-      ${x(t.name)}
-      ${on ? '<span style="margin-left:2px;font-size:10px">✓</span>' : ''}
+      ${x(t.name)}${on?' ✓':''}
     </button>`;
-  }).join('') +
-  `<button type="button" onclick="closeModal();openTagManager()"
-    style="font-size:11px;color:var(--text3);background:none;border:1px dashed var(--border);
-           border-radius:99px;padding:3px 8px;cursor:pointer;font-family:inherit;transition:all .15s"
-    onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'"
-    onmouseout="this.style.borderColor='var(--border)';this.style.color='var(--text3)'">
-    <span class="ic" style="width:11px;height:11px;display:inline-flex;align-items:center;justify-content:center"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span> new tag
-  </button>`;
+  }).join('')+`<button type="button" onclick="closeModal();openTagManager()" style="font-size:11px;color:var(--text3);background:none;border:1px dashed var(--border);border-radius:99px;padding:3px 8px;cursor:pointer;font-family:inherit">+ new tag</button>`;
 }
 
-function toggleTag(id, color) {
-  if (selTags.has(id)) {
-    selTags.delete(id);
-  } else {
-    selTags.add(id);
-  }
-  // Re-render tag chips so checkmark and style update cleanly
+function toggleTag(id) {
+  selTags.has(id) ? selTags.delete(id) : selTags.add(id);
   fillTags();
 }
 
 function addStRow(s) {
   const row = document.createElement('div');
-  row.className='st-row';
-  row.innerHTML=`<div class="cb${s?.completed?' on':''}" onclick="this.classList.toggle('on')"></div>
+  row.className = 'st-row';
+  row.innerHTML = `<div class="cb${s?.completed?' on':''}" onclick="this.classList.toggle('on')"></div>
     <input class="inp" type="text" placeholder="Subtask…" value="${x(s?.title||'')}"/>
-    <button type="button" class="icon-btn" onclick="this.parentElement.remove()"><span class="ic" style="width:13px;height:13px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span></button>`;
+    <button type="button" class="icon-btn" onclick="this.parentElement.remove()">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>`;
   q('f-subs').appendChild(row);
 }
 
-function togglePin() { pinned=!pinned; updPin(); }
+function togglePin() { isPinned=!isPinned; updPin(); }
 function updPin() {
-  const b=q('pin-btn');
-  b.style.color=pinned?'var(--amber)':'';
-  b.innerHTML=pinned
-    ? `<span class="ic" style="width:13px;height:13px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24z"/></svg></span> Pinned`
-    : '<span class="ic" style="width:13px;height:13px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24z"/></svg></span> Pin';
+  q('pin-btn').textContent = isPinned ? '📌 Pinned' : '📌 Pin';
+  q('pin-btn').style.color = isPinned ? 'var(--amber)' : '';
 }
 
-// ── THE SAVE FUNCTION ─────────────────────────────────────────
 async function saveTask() {
   const title = q('f-title').value.trim();
   if (!title) { q('f-title').classList.add('err'); q('f-title').focus(); return; }
   q('f-title').classList.remove('err');
-
-  // Guard: make sure we have a user
-  if (!USER || !USER.id) {
-    showToast('Not signed in — please refresh','err');
-    return;
-  }
+  if (!USER?.id) { showToast('Not signed in','err'); return; }
 
   const btn = q('save-btn');
   btn.disabled=true; btn.textContent='Saving…';
 
-  // Build payload — user_id MUST match auth session
   const payload = {
     user_id:     USER.id,
     title,
@@ -1342,62 +1174,31 @@ async function saveTask() {
     due_date:    q('f-due').value ? new Date(q('f-due').value).toISOString() : null,
     reminder:    q('f-rem').value ? new Date(q('f-rem').value).toISOString() : null,
     recurring:   q('f-recur').value||'none',
-    pinned,
+    pinned:      isPinned,
   };
 
-
   let taskId = editId;
-
   if (taskId) {
-    // UPDATE — don't change user_id
-    const { error } = await sb.from('tasks')
-      .update({ ...payload })
-      .eq('id', taskId)
-      .eq('user_id', USER.id);  // safety: only update own tasks
-    if (error) {
-      console.error('Update error:', error);
-      showToast('Update failed: '+error.message,'err');
-      btn.disabled=false; btn.textContent='Save Changes'; return;
-    }
+    const { error } = await sb.from('tasks').update(payload).eq('id',taskId).eq('user_id',USER.id);
+    if (error) { showToast('Update failed: '+error.message,'err'); btn.disabled=false; btn.textContent='Save Changes'; return; }
   } else {
-    // INSERT
-    const { data, error } = await sb.from('tasks')
-      .insert(payload)
-      .select('id')
-      .single();
-    if (error) {
-      console.error('Insert error:', error);
-      showToast('Save failed: '+error.message,'err');
-      btn.disabled=false; btn.textContent='Save Task'; return;
-    }
+    const { data, error } = await sb.from('tasks').insert(payload).select('id').single();
+    if (error) { showToast('Save failed: '+error.message,'err'); btn.disabled=false; btn.textContent='Save Task'; return; }
     taskId = data.id;
   }
 
-  // Tags
   await sb.from('task_tags').delete().eq('task_id',taskId);
-  if (selTags.size>0) {
-    await sb.from('task_tags').insert([...selTags].map(tid=>({task_id:taskId,tag_id:tid})));
-  }
+  if (selTags.size>0) await sb.from('task_tags').insert([...selTags].map(tid=>({task_id:taskId,tag_id:tid})));
 
-  // Subtasks — full sync for both new and edit
+  await sb.from('subtasks').delete().eq('task_id',taskId);
   const stRows = [...document.querySelectorAll('#f-subs .st-row')];
-  const newSubtasks = stRows.map((row, i) => ({
-    title:     row.querySelector('input[type=text]').value.trim(),
-    completed: row.querySelector('.cb').classList.contains('on'),
-    position:  i,
-  })).filter(s => s.title);
+  const newSubs = stRows.map((row,i)=>({
+    title:row.querySelector('input').value.trim(),
+    completed:row.querySelector('.cb').classList.contains('on'),
+    position:i,
+  })).filter(s=>s.title);
+  if (newSubs.length) await sb.from('subtasks').insert(newSubs.map(s=>({task_id:taskId,...s})));
 
-  if (newSubtasks.length || editId) {
-    // Delete existing subtasks then reinsert (cleanest approach)
-    await sb.from('subtasks').delete().eq('task_id', taskId);
-    if (newSubtasks.length) {
-      await sb.from('subtasks').insert(
-        newSubtasks.map(s => ({ task_id: taskId, title: s.title, completed: s.completed, position: s.position }))
-      );
-    }
-  }
-
-  // Reload
   tasks = await loadTasks();
   renderTasks(); updateCounts(); renderSidebar();
   btn.disabled=false;
@@ -1405,18 +1206,16 @@ async function saveTask() {
   showToast(editId?'Task updated ✓':'Task created ✓');
 }
 
-// ══════════════════════════════════════════════
+// ══════════════════════════════════════
 // NAVIGATION
-// ══════════════════════════════════════════════
+// ══════════════════════════════════════
 function nav(v) {
   mobileNavClose();
   view=v; activeList=null; filters={search:'',status:'',priority:'',tagId:null};
   document.querySelectorAll('.s-item[id^=n-]').forEach(b=>b.classList.remove('on'));
-  document.querySelectorAll('#s-tags .s-item').forEach(b=>b.classList.remove('on'));
-  document.querySelectorAll('#s-lists .s-item').forEach(b=>b.classList.remove('on'));
   const el=document.getElementById('n-'+v); if(el) el.classList.add('on');
   const titles={all:'All Tasks',today:'Today',upcoming:'Upcoming',overdue:'Overdue',analytics:'Analytics'};
-  q('view-title').textContent=titles[v]||'Tasks';
+  q('view-title').textContent = titles[v]||'Tasks';
   q('s-inp').value='';
   document.querySelectorAll('.fc').forEach(c=>c.classList.remove('on'));
   renderTasks();
@@ -1427,39 +1226,30 @@ function setList(id) {
   activeList=id; view='all'; filters={search:'',status:'',priority:'',tagId:null};
   document.querySelectorAll('.s-item').forEach(b=>b.classList.remove('on'));
   document.querySelector(`[onclick="setList('${id}')"]`)?.classList.add('on');
-  const l=lists.find(l=>l.id===id);
-  q('view-title').textContent=l?l.name:'List';
+  q('view-title').textContent = lists.find(l=>l.id===id)?.name||'List';
   renderTasks();
 }
 
 function filterTag(id) {
-  filters.tagId = filters.tagId === id ? null : id;
-  // Update sidebar active states
-  // Update sidebar tag active states
-  document.querySelectorAll('#s-tags .s-item').forEach(b => {
-    const oc = b.getAttribute('onclick') || '';
+  filters.tagId = filters.tagId===id ? null : id;
+  document.querySelectorAll('#s-tags .s-item').forEach(b=>{
+    const oc = b.getAttribute('onclick')||'';
     const btnId = oc.match(/filterTag\('([^']+)'\)/)?.[1];
-    b.classList.toggle('on', btnId && btnId === filters.tagId);
+    b.classList.toggle('on', btnId && btnId===filters.tagId);
   });
-  // Update view title
-  if (filters.tagId) {
-    const tag = tags.find(t=>t.id===id);
-    q('view-title').textContent = tag ? tag.name : 'Tagged';
-  } else {
-    q('view-title').textContent = 'All Tasks';
-  }
+  q('view-title').textContent = filters.tagId ? (tags.find(t=>t.id===id)?.name||'Tagged') : 'All Tasks';
   renderTasks();
 }
 
 function doSearch(v) { filters.search=v; renderTasks(); }
 
-function setFilter(type,val) {
-  document.querySelectorAll(`.fc[onclick="setFilter('${type}','${val}')"]`).forEach(c=>{
-    const same = filters[type]===val;
-    document.querySelectorAll(`.fc[onclick^="setFilter('${type}"]`).forEach(x=>x.classList.remove('on'));
-    if (!same) { filters[type]=val; c.classList.add('on'); }
-    else filters[type]='';
-  });
+function setFilter(type, val) {
+  const same = filters[type]===val;
+  document.querySelectorAll(`.fc[onclick^="setFilter('${type}"]`).forEach(c=>c.classList.remove('on'));
+  if (!same) {
+    filters[type]=val;
+    document.querySelector(`.fc[onclick="setFilter('${type}','${val}')"]`)?.classList.add('on');
+  } else { filters[type]=''; }
   renderTasks();
 }
 
@@ -1468,90 +1258,153 @@ function clearFilters() {
   document.querySelectorAll('.fc').forEach(c=>c.classList.remove('on'));
   document.querySelectorAll('#s-tags .s-item').forEach(b=>b.classList.remove('on'));
   q('s-inp').value='';
-  q('view-title').textContent = view==='all'?'All Tasks':view.charAt(0).toUpperCase()+view.slice(1);
+  q('view-title').textContent = 'All Tasks';
   renderTasks();
 }
 
 function toggleFilters() { q('filter-bar').classList.toggle('hidden'); }
 
-// ══════════════════════════════════════════════
-// LISTS
-// ══════════════════════════════════════════════
+// ══════════════════════════════════════
+// LISTS & TAGS
+// ══════════════════════════════════════
+async function deleteList(id) {
+  const list = lists.find(l=>l.id===id);
+  const taskCount = tasks.filter(t=>t.list_id===id).length;
+  const msg = taskCount
+    ? `Delete "${list?.name}"? The ${taskCount} task${taskCount!==1?'s':''} in it will be moved to No List.`
+    : `Delete "${list?.name}"?`;
+  if (!confirm(msg)) return;
+  // Move tasks in this list to no list
+  if (taskCount) await sb.from('tasks').update({list_id:null}).eq('list_id',id).eq('user_id',USER.id);
+  await sb.from('lists').delete().eq('id',id).eq('user_id',USER.id);
+  lists = lists.filter(l=>l.id!==id);
+  if (activeList===id) { activeList=null; nav('all'); }
+  tasks = await loadTasks();
+  renderSidebar(); renderTasks(); updateCounts();
+  showToast(`"${list?.name}" deleted`);
+}
+
 async function addList() {
-  const name=prompt('List name:'); if(!name?.trim()) return;
-  const colors=['#6366f1','#f59e0b','#10b981','#3b82f6','#ef4444','#8b5cf6'];
-  const color=colors[Math.floor(Math.random()*colors.length)];
-  const { data,error } = await sb.from('lists')
-    .insert({user_id:USER.id,name:name.trim(),color})
-    .select().single();
+  const name = prompt('List name:'); if (!name?.trim()) return;
+  const colors = ['#6366f1','#f59e0b','#10b981','#3b82f6','#ef4444','#8b5cf6'];
+  const color = colors[Math.floor(Math.random()*colors.length)];
+  const { data, error } = await sb.from('lists').insert({user_id:USER.id,name:name.trim(),color}).select().single();
   if (error) { showToast('Failed: '+error.message,'err'); return; }
   lists.push(data); renderSidebar(); showToast('"'+name+'" created');
 }
 
-// ══════════════════════════════════════════════
-// ANALYTICS
-// ══════════════════════════════════════════════
-async function renderAnalytics() {
-  const total   = tasks.length;
-  const done    = tasks.filter(t=>t.status==='completed').length;
-  const inprog  = tasks.filter(t=>t.status==='in-progress').length;
-  const tod     = new Date(); tod.setHours(0,0,0,0);
-  const over    = tasks.filter(t=>t.status!=='completed'&&t.due_date&&new Date(t.due_date)<tod).length;
-  const rate    = total?Math.round(done/total*100):0;
-  const { data:wk } = await sb.rpc('get_weekly_stats',{p_user_id:USER.id}).catch(()=>({data:[]}));
-  const days    = wk||[];
-  const max     = Math.max(...days.map(d=>d.completed||0),1);
+function openTagManager() { renderTagManagerList(); q('tag-overlay').classList.add('on'); setTimeout(()=>q('new-tag-name').focus(),80); }
+function closeTagManager() { q('tag-overlay').classList.remove('on'); }
 
-  q('task-list').innerHTML=`
-    <div style="max-width:660px">
-      <div class="stat-grid">
-        <div class="stat-card"><div style="margin-bottom:6px;display:flex;justify-content:center"><span class="ic" style="width:22px;height:22px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/><polyline points="3 6 4 7 6 5"/><polyline points="3 12 4 13 6 11"/><polyline points="3 18 4 19 6 17"/></svg></span></div><div class="stat-val" style="color:var(--accent)">${total}</div><div class="stat-lbl">Total</div></div>
-        <div class="stat-card"><div style="margin-bottom:6px;display:flex;justify-content:center;color:var(--green)"><span class="ic" style="width:22px;height:22px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg></span></div><div class="stat-val" style="color:var(--green)">${done}</div><div class="stat-lbl">Completed</div></div>
-        <div class="stat-card"><div style="font-size:20px;margin-bottom:6px">🔄</div><div class="stat-val" style="color:var(--blue)">${inprog}</div><div class="stat-lbl">In Progress</div></div>
-        <div class="stat-card"><div style="margin-bottom:6px;display:flex;justify-content:center;color:var(--red)"><span class="ic" style="width:22px;height:22px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span></div><div class="stat-val" style="color:var(--red)">${over}</div><div class="stat-lbl">Overdue</div></div>
-      </div>
-      <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);padding:16px;margin-bottom:12px">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-          <span style="font-size:13px;font-weight:600">Completion Rate</span>
-          <span style="font-size:22px;font-weight:700;color:var(--accent)">${rate}%</span>
-        </div>
-        <div class="pbar" style="height:8px">
-          <div class="pfill${rate>70?' g':''}" style="width:${rate}%;${rate<40?'background:var(--red)':rate<70?'background:var(--amber)':''}"></div>
-        </div>
-      </div>
-      ${days.length?`
-      <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);padding:16px">
-        <div style="font-size:13px;font-weight:600;margin-bottom:14px">Last 7 Days</div>
-        <div style="display:flex;align-items:flex-end;gap:8px;height:110px">
-          ${days.map(d=>`
-            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
-              <div style="width:100%;display:flex;align-items:flex-end;height:90px">
-                <div style="flex:1;background:var(--accent);border-radius:3px 3px 0 0;height:${Math.round((d.completed||0)/max*100)}%;min-height:${d.completed?'3px':'0'};transition:height .5s"></div>
-              </div>
-              <span style="font-size:10px;color:var(--text3)">${new Date(d.day).toLocaleDateString('en',{weekday:'short'})}</span>
-              <span style="font-size:10px;font-weight:600">${d.completed||0}</span>
-            </div>`).join('')}
-        </div>
-      </div>`:''}
+function renderTagManagerList() {
+  const c = q('tag-list-modal');
+  if (!tags.length) { c.innerHTML = `<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px">No tags yet</div>`; return; }
+  c.innerHTML = tags.map(tag=>{
+    const cnt = tasks.filter(t=>(t.task_tags||[]).some(tt=>tt.tag?.id===tag.id)).length;
+    return `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r)">
+      <span style="width:14px;height:14px;border-radius:50%;background:${tag.color};flex-shrink:0"></span>
+      <input class="inp" value="${x(tag.name)}" style="flex:1;height:28px;font-size:13px;border:none;background:transparent;padding:0;outline:none" onblur="updateTagName('${tag.id}',this.value)" onkeydown="if(event.key==='Enter')this.blur()"/>
+      <input type="color" value="${tag.color}" style="width:28px;height:28px;padding:1px;border:1px solid var(--border);border-radius:5px;cursor:pointer;background:var(--bg)" onchange="updateTagColor('${tag.id}',this.value)"/>
+      <span style="font-size:11px;color:var(--text3);white-space:nowrap">${cnt} task${cnt!==1?'s':''}</span>
+      <button class="icon-btn" onclick="deleteTag('${tag.id}')" style="color:var(--text3)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+      </button>
     </div>`;
+  }).join('');
 }
 
-// ══════════════════════════════════════════════
+async function createTag() {
+  const name = q('new-tag-name').value.trim();
+  const color = q('new-tag-color').value;
+  if (!name) { q('new-tag-name').style.borderColor='var(--red)'; return; }
+  q('new-tag-name').style.borderColor='';
+  const { data, error } = await sb.from('tags').insert({user_id:USER.id,name,color}).select().single();
+  if (error) { showToast('Failed: '+error.message,'err'); return; }
+  tags.push(data); q('new-tag-name').value='';
+  renderTagManagerList(); renderSidebar(); showToast('Tag "'+name+'" created');
+}
+
+async function updateTagName(id, name) {
+  name = name.trim(); if (!name) return;
+  await sb.from('tags').update({name}).eq('id',id).eq('user_id',USER.id);
+  tags = tags.map(t=>t.id===id?{...t,name}:t); renderSidebar();
+}
+
+async function updateTagColor(id, color) {
+  await sb.from('tags').update({color}).eq('id',id).eq('user_id',USER.id);
+  tags = tags.map(t=>t.id===id?{...t,color}:t);
+  tasks = await loadTasks(); renderTasks(); renderSidebar();
+}
+
+async function deleteTag(id) {
+  const tag = tags.find(t=>t.id===id);
+  if (!confirm(`Delete tag "${tag?.name}"?`)) return;
+  await sb.from('tags').delete().eq('id',id).eq('user_id',USER.id);
+  tags = tags.filter(t=>t.id!==id); tasks = await loadTasks();
+  renderTagManagerList(); renderSidebar(); renderTasks();
+  showToast('Tag deleted');
+}
+
+// ══════════════════════════════════════
+// ANALYTICS
+// ══════════════════════════════════════
+async function renderAnalytics() {
+  const total  = tasks.length;
+  const done   = tasks.filter(t=>t.status==='completed').length;
+  const inprog = tasks.filter(t=>t.status==='in-progress').length;
+  const tod    = new Date(); tod.setHours(0,0,0,0);
+  const over   = tasks.filter(t=>t.status!=='completed'&&t.due_date&&new Date(t.due_date)<tod).length;
+  const rate   = total ? Math.round(done/total*100) : 0;
+  const { data:wk } = await sb.rpc('get_weekly_stats',{p_user_id:USER.id}).catch(()=>({data:[]}));
+  const days = wk||[];
+  const max  = Math.max(...days.map(d=>d.completed||0), 1);
+
+  q('task-list').innerHTML = `<div style="max-width:660px">
+    <div class="stat-grid">
+      <div class="stat-card"><div style="font-size:1.4rem;margin-bottom:6px">📋</div><div class="stat-val" style="color:var(--accent)">${total}</div><div class="stat-lbl">Total</div></div>
+      <div class="stat-card"><div style="font-size:1.4rem;margin-bottom:6px">✅</div><div class="stat-val" style="color:var(--green)">${done}</div><div class="stat-lbl">Completed</div></div>
+      <div class="stat-card"><div style="font-size:1.4rem;margin-bottom:6px">🔄</div><div class="stat-val" style="color:var(--blue)">${inprog}</div><div class="stat-lbl">In Progress</div></div>
+      <div class="stat-card"><div style="font-size:1.4rem;margin-bottom:6px">⚠️</div><div class="stat-val" style="color:var(--red)">${over}</div><div class="stat-lbl">Overdue</div></div>
+    </div>
+    <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:16px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+        <span style="font-size:13px;font-weight:600">Completion Rate</span>
+        <span style="font-size:22px;font-weight:700;color:var(--accent)">${rate}%</span>
+      </div>
+      <div class="pbar" style="height:8px"><div class="pfill${rate>70?' g':''}" style="width:${rate}%;${rate<40?'background:var(--red)':rate<70?'background:var(--amber)':''}"></div></div>
+    </div>
+    ${days.length?`<div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:16px">
+      <div style="font-size:13px;font-weight:600;margin-bottom:14px">Last 7 Days</div>
+      <div style="display:flex;align-items:flex-end;gap:8px;height:110px">
+        ${days.map(d=>`<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px">
+          <div style="width:100%;display:flex;align-items:flex-end;height:90px">
+            <div style="flex:1;background:var(--accent);border-radius:3px 3px 0 0;height:${Math.round((d.completed||0)/max*100)}%;min-height:${d.completed?'3px':'0'};transition:height .5s"></div>
+          </div>
+          <span style="font-size:10px;color:var(--text3)">${new Date(d.day).toLocaleDateString('en',{weekday:'short'})}</span>
+          <span style="font-size:10px;font-weight:600">${d.completed||0}</span>
+        </div>`).join('')}
+      </div>
+    </div>`:''}
+  </div>`;
+}
+
+// ══════════════════════════════════════
 // THEME / UI
-// ══════════════════════════════════════════════
+// ══════════════════════════════════════
 function toggleTheme() {
-  const t=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+  const t = document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
   document.documentElement.setAttribute('data-theme',t);
   localStorage.setItem('pu-theme',t);
-  // update theme icon buttons
-  const _themeIcon = document.getElementById('theme-icon-btn');
-  const _themeDDIcon = document.getElementById('theme-dd-btn');
-  if (_themeIcon) _themeIcon.querySelector('svg')?.setAttribute('data-mode', t);
-  if (_themeDDIcon) _themeDDIcon.querySelector('svg')?.setAttribute('data-mode', t);
   showToast(t==='dark'?'Dark mode':'Light mode');
 }
 
-function toggleDD() {
+function toggleFocus() {
+  focusMode = !focusMode;
+  document.body.classList.toggle('focus-mode', focusMode);
+  showToast(focusMode?'Focus mode on':'Focus mode off');
+}
+
+function toggleUserDD() {
   const dd=q('ddrop'), av=q('u-av');
   dd.classList.toggle('on');
   if (dd.classList.contains('on')) {
@@ -1559,449 +1412,173 @@ function toggleDD() {
     dd.style.cssText=`position:fixed;left:${r.left}px;bottom:${window.innerHeight-r.top+8}px;top:auto`;
   }
 }
-function closeDD() { q('ddrop').classList.remove('on'); }
+function closeUserDD() { q('ddrop').classList.remove('on'); }
 
-document.addEventListener('click',e=>{
-  if (!e.target.closest('.s-user')&&!e.target.closest('#ddrop')) closeDD();
+document.addEventListener('click', e=>{
+  if (!e.target.closest('.s-user')&&!e.target.closest('#ddrop')) closeUserDD();
 });
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
 
 async function signOut() {
   await sb.auth.signOut();
-  location.href=location.origin+'/pages/auth.html';
+  location.href = location.origin+'/pages/auth.html';
 }
 
-// ══════════════════════════════════════════════
-// HELPERS
-// ══════════════════════════════════════════════
-function q(id) { return document.getElementById(id); }
-function x(s)  { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+// ── Sort ──
+function cycleSortMenu() {
+  const m = q('sort-menu');
+  m.style.display = m.style.display==='none'?'block':'none';
+}
+function setSort(mode) {
+  sortMode=mode; q('sort-menu').style.display='none';
+  renderTasks(); showToast('Sorted by '+mode);
+}
+document.addEventListener('click', e=>{
+  if (!e.target.closest('#sort-btn')) { const m=q('sort-menu'); if(m) m.style.display='none'; }
+});
 
+// ── Mobile sidebar ──
+function toggleSidebar() {
+  const sb=document.getElementById('sidebar'), bd=document.getElementById('sidebar-backdrop');
+  if (sb.classList.contains('open')) { closeSidebar(); }
+  else { sb.classList.add('open'); bd.style.display='block'; document.body.style.overflow='hidden'; }
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-backdrop').style.display='none';
+  document.body.style.overflow='';
+}
+function mobileNavClose() { if (window.innerWidth<=900) closeSidebar(); }
+
+// ── Quick capture ──
+function openQuickCapture() {
+  q('quick-capture').classList.add('on'); q('qc-input').value=''; q('qc-input').focus();
+}
+function closeQuickCapture() { q('quick-capture').classList.remove('on'); }
+async function qcKey(e) {
+  if (e.key==='Escape') { closeQuickCapture(); return; }
+  if (e.key!=='Enter') return;
+  const title = q('qc-input').value.trim(); if (!title) return;
+  q('qc-input').value=''; closeQuickCapture();
+  if (!USER) return;
+  await sb.from('tasks').insert({user_id:USER.id,title,status:'todo',priority:'medium'}).select('id').single();
+  tasks = await loadTasks(); renderTasks(); updateCounts(); renderSidebar();
+  showToast('"'+title+'" captured');
+}
+
+// ── Command palette ──
+const CMD_ACTIONS = [
+  { lbl:'New Task',        sub:'Create a new task',          action:()=>openModal(null) },
+  { lbl:'Today',           sub:"View today's tasks",         action:()=>nav('today') },
+  { lbl:'All Tasks',       sub:'View all tasks',             action:()=>nav('all') },
+  { lbl:'Overdue',         sub:'View overdue tasks',         action:()=>nav('overdue') },
+  { lbl:'Upcoming',        sub:'View upcoming tasks',        action:()=>nav('upcoming') },
+  { lbl:'Analytics',       sub:'Open analytics',             action:()=>nav('analytics') },
+  { lbl:'Focus Mode',      sub:'Hide distractions (F)',      action:()=>toggleFocus() },
+  { lbl:'Quick Capture',   sub:'Fast task entry (Q)',        action:()=>openQuickCapture() },
+  { lbl:'Toggle Theme',    sub:'Switch dark/light mode',     action:()=>toggleTheme() },
+  { lbl:'Sort A→Z',        sub:'Sort alphabetically',        action:()=>setSort('alpha') },
+  { lbl:'Sort Priority',   sub:'High priority first',        action:()=>setSort('priority') },
+  { lbl:'Sort by Due',     sub:'Earliest due first',         action:()=>setSort('due') },
+  { lbl:'Sign Out',        sub:'Sign out of PlanUp',         action:()=>signOut() },
+];
+
+function openCmd() {
+  q('cmd-overlay').classList.add('on'); q('cmd-input').value=''; cmdSearch('');
+  setTimeout(()=>q('cmd-input').focus(), 80);
+}
+function closeCmd() { q('cmd-overlay').classList.remove('on'); cmdIdx=-1; }
+
+function cmdSearch(val) {
+  const v = val.toLowerCase().trim();
+  const res = q('cmd-results'); cmdIdx=-1;
+  const acts = CMD_ACTIONS.filter(a=>!v||a.lbl.toLowerCase().includes(v)||a.sub.toLowerCase().includes(v));
+  const tks = v.length>1 ? tasks.filter(t=>t.title.toLowerCase().includes(v)).slice(0,5) : [];
+  cmdItems = [...acts, ...tks.map(t=>({lbl:t.title,sub:t.status+(t.due_date?' · '+rt(t.due_date):''),action:()=>openModal(t.id)}))];
+  if (!cmdItems.length) { res.innerHTML=`<div id="cmd-empty">No results for "${val}"</div>`; return; }
+  let html='';
+  if (acts.length) { html+=`<div class="cmd-section">Actions</div>`+acts.map((a,i)=>`<div class="cmd-item" onclick="cmdRun(${i})"><span class="cmd-lbl">${a.lbl}</span><span class="cmd-sub">${a.sub}</span></div>`).join(''); }
+  if (tks.length)  { html+=`<div class="cmd-section">Tasks</div>`+tks.map((t,i)=>{const idx=acts.length+i;return`<div class="cmd-item" onclick="cmdRun(${idx})"><span class="cmd-lbl">${x(t.title)}</span><span class="cmd-sub">${t.status+(t.due_date?' · '+rt(t.due_date):'')}</span></div>`;}).join(''); }
+  res.innerHTML=html;
+}
+function cmdKey(e) {
+  const items=q('cmd-results').querySelectorAll('.cmd-item');
+  if (e.key==='ArrowDown') { e.preventDefault(); cmdIdx=Math.min(cmdIdx+1,items.length-1); items.forEach((el,i)=>el.classList.toggle('active',i===cmdIdx)); items[cmdIdx]?.scrollIntoView({block:'nearest'}); }
+  else if (e.key==='ArrowUp') { e.preventDefault(); cmdIdx=Math.max(cmdIdx-1,0); items.forEach((el,i)=>el.classList.toggle('active',i===cmdIdx)); items[cmdIdx]?.scrollIntoView({block:'nearest'}); }
+  else if (e.key==='Enter') { e.preventDefault(); if(cmdIdx>=0&&cmdItems[cmdIdx]) cmdRun(cmdIdx); else if(cmdItems[0]) cmdRun(0); }
+  else if (e.key==='Escape') closeCmd();
+}
+function cmdRun(idx) { closeCmd(); setTimeout(()=>cmdItems[idx]?.action(), 80); }
+
+// ── Keyboard shortcuts ──
+document.addEventListener('keydown', e=>{
+  const tag = document.activeElement.tagName.toLowerCase();
+  const typing = tag==='input'||tag==='textarea'||tag==='select';
+  if ((e.metaKey||e.ctrlKey)&&e.key==='k') { e.preventDefault(); q('cmd-overlay').classList.contains('on')?closeCmd():openCmd(); return; }
+  if (e.key==='Escape') { closeModal(); closeCmd(); closeQuickCapture(); return; }
+  if (typing) return;
+  if (e.key==='c'||e.key==='C') openModal(null);
+  if (e.key==='q'||e.key==='Q') openQuickCapture();
+  if (e.key==='f'||e.key==='F') toggleFocus();
+  if (e.key==='?') openCmd();
+  if (e.key==='1') nav('all');
+  if (e.key==='2') nav('today');
+  if (e.key==='3') nav('upcoming');
+  if (e.key==='4') nav('overdue');
+  if (e.key==='5') nav('analytics');
+});
+
+// ══════════════════════════════════════
+// NOTIFICATIONS
+// ══════════════════════════════════════
+let _reminderTimers=[];
+async function requestNotifPermission() { if('Notification'in window&&Notification.permission==='default') await Notification.requestPermission(); }
+function scheduleReminders() {
+  _reminderTimers.forEach(t=>clearTimeout(t)); _reminderTimers=[];
+  if (!('Notification'in window)||Notification.permission!=='granted') return;
+  const now=Date.now();
+  tasks.forEach(task=>{
+    if (!task.reminder||task.status==='completed') return;
+    const delay=new Date(task.reminder).getTime()-now;
+    if (delay<0||delay>7*24*60*60*1000) return;
+    const timer=setTimeout(()=>{
+      const n=new Notification('PlanUp — '+task.title,{body:task.due_date?'Due '+new Date(task.due_date).toLocaleDateString():'Tap to open PlanUp',tag:task.id,requireInteraction:task.priority==='high'});
+      n.onclick=()=>{window.focus();openModal(task.id);n.close();};
+    },delay);
+    _reminderTimers.push(timer);
+  });
+}
+function showNotifPrompt() {
+  if (!('Notification'in window)||Notification.permission!=='default') return;
+  const bar=document.createElement('div');
+  bar.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r2);padding:12px 16px;box-shadow:var(--sh3);z-index:500;font-size:13px;color:var(--text2);max-width:480px;width:calc(100% - 32px)';
+  bar.innerHTML='🔔 <span>Enable reminders for task due dates</span><button class="btn btn-primary btn-sm" onclick="requestNotifPermission().then(()=>{scheduleReminders();this.closest(\'div\').remove()})">Enable</button><button class="btn btn-ghost btn-sm" onclick="this.closest(\'div\').remove()">Not now</button>';
+  document.body.appendChild(bar);
+  setTimeout(()=>bar.remove(), 12000);
+}
+
+// ══════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════
+function q(id) { return document.getElementById(id); }
+function x(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function rt(iso) {
   if (!iso) return '';
   const d=Math.round((new Date(iso)-new Date())/86400000);
-  if (d===0) return 'Today';
-  if (d===1) return 'Tomorrow';
-  if (d===-1) return 'Yesterday';
-  if (d<0) return Math.abs(d)+'d ago';
-  return 'in '+d+'d';
+  if (d===0) return 'Today'; if (d===1) return 'Tomorrow'; if (d===-1) return 'Yesterday';
+  if (d<0) return Math.abs(d)+'d ago'; return 'in '+d+'d';
 }
-
 function toLocal(iso) {
   const d=new Date(iso), p=n=>String(n).padStart(2,'0');
   return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
 }
-
 let toastT;
-function showToast(msg,type='') {
+function showToast(msg, type='') {
   const el=q('toast'); el.textContent=msg; el.className='show'+(type?' '+type:'');
-  clearTimeout(toastT); toastT=setTimeout(()=>el.className='',3200);
+  clearTimeout(toastT); toastT=setTimeout(()=>el.className='', 3200);
 }
-
 function redirect() { location.href=location.origin+'/pages/auth.html'; }
 
-// ── Mobile sidebar ──────────────────────────────────────────
-function toggleSidebar() {
-  const sb = document.getElementById('sidebar');
-  const bd = document.getElementById('sidebar-backdrop');
-  if (sb.classList.contains('open')) {
-    closeSidebar();
-  } else {
-    sb.classList.add('open');
-    bd.classList.add('show');
-    document.body.style.overflow = 'hidden';
-  }
-}
-
-function closeSidebar() {
-  document.getElementById('sidebar').classList.remove('open');
-  const bd = document.getElementById('sidebar-backdrop');
-  bd.classList.remove('show');
-  document.body.style.overflow = '';
-}
-
-// Close sidebar when a nav item is clicked on mobile
-function mobileNavClose() {
-  if (window.innerWidth <= 900) closeSidebar();
-}
-
-
-// ══════════════════════════════════════════════
-// SORT
-// ══════════════════════════════════════════════
-let sortMode = 'default';
-
-function cycleSortMenu() {
-  const menu = document.getElementById('sort-menu');
-  menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
-}
-
-function setSort(mode) {
-  sortMode = mode;
-  document.getElementById('sort-menu').style.display = 'none';
-  // Update button label
-  // sort label stored in data-sort attribute, no emoji needed
-  // update sort button icon safely
-  const sb = document.getElementById('sort-btn');
-  sb.dataset.sort = mode;
-  sb.title = 'Sort: ' + mode;
-  renderTasks();
-  showToast('Sorted by ' + mode);
-}
-
-// Sort applied inside getVisible via applySortMode()
-
-document.addEventListener('click', e => {
-  if (!e.target.closest('#sort-btn')) {
-    const m = document.getElementById('sort-menu');
-    if (m) m.style.display = 'none';
-  }
-});
-
-// ══════════════════════════════════════════════
-// COMMAND PALETTE  (Cmd/Ctrl+K)
-// ══════════════════════════════════════════════
-let cmdIdx = -1;
-let cmdItems = [];
-
-const CMD_ACTIONS = [
-  { ic:'plus', lbl:'New Task',          sub:"Create a new task",         action: ()=>openModal(null) },
-  { ic:'sun', lbl:'Today',             sub:"View today's tasks",        action: ()=>nav('today') },
-  { ic:'layout-list', lbl:'All Tasks',         sub:"View all tasks",             action: ()=>nav('all') },
-  { ic:'alert-circle', lbl:'Overdue',           sub:"View overdue tasks",         action: ()=>nav('overdue') },
-  { ic:'calendar', lbl:'Upcoming',          sub:"View upcoming tasks",        action: ()=>nav('upcoming') },
-  { ic:'bar-chart-2', lbl:'Analytics',         sub:"Open analytics",             action: ()=>nav('analytics') },
-  { ic:'focus', lbl:'Focus Mode',        sub:"Hide distractions",          action: ()=>toggleFocus() },
-  { ic:'zap', lbl:'Quick Capture',     sub:"Fast task entry (Q)",        action: ()=>openQuickCapture() },
-  { ic:'moon', lbl:'Toggle Theme',      sub:"Switch dark/light mode",     action: ()=>toggleTheme() },
-  { ic:'a-large-small', lbl:'Sort A→Z',          sub:"Sort tasks alphabetically",  action: ()=>setSort('alpha') },
-  { ic:'flame', lbl:'Sort by Priority',  sub:"High priority first",        action: ()=>setSort('priority') },
-  { ic:'calendar-clock', lbl:'Sort by Due Date',  sub:"Earliest due date first",    action: ()=>setSort('due') },
-  { ic:'log-out', lbl:'Sign Out',          sub:"Sign out of PlanUp",         action: ()=>signOut() },
-];
-
-function openCmd() {
-  q('cmd-overlay').classList.add('on');
-  q('cmd-input').value = '';
-  cmdSearch('');
-  setTimeout(() => q('cmd-input').focus(), 80);
-}
-
-function closeCmd() {
-  q('cmd-overlay').classList.remove('on');
-  cmdIdx = -1;
-}
-
-function cmdOverlayClick(e) {
-  if (e.target === q('cmd-overlay')) closeCmd();
-}
-
-function cmdSearch(val) {
-  const q2 = val.toLowerCase().trim();
-  const res = q('cmd-results');
-  cmdIdx = -1;
-
-  // Filter actions
-  const matchedActions = CMD_ACTIONS.filter(a =>
-    !q2 || a.lbl.toLowerCase().includes(q2) || a.sub.toLowerCase().includes(q2)
-  );
-
-  // Filter tasks
-  const matchedTasks = q2.length > 1
-    ? tasks.filter(t => t.title.toLowerCase().includes(q2)).slice(0, 5)
-    : [];
-
-  cmdItems = [...matchedActions, ...matchedTasks.map(t => ({
-    ic: t.status==='completed' ? 'check-circle-2' : t.pinned ? 'pin' : 'file-text',
-    lbl: t.title,
-    sub: t.status + (t.due_date ? ' · ' + rt(t.due_date) : ''),
-    action: () => openModal(t.id),
-    isTask: true
-  }))];
-
-  if (!cmdItems.length) {
-    res.innerHTML = `<div id="cmd-empty">No results for "<strong>${val}</strong>"</div>`;
-    return;
-  }
-
-  let html = '';
-  if (matchedActions.length) {
-    html += `<div class="cmd-section">Actions</div>`;
-    html += matchedActions.map((a,i) =>
-      `<div class="cmd-item" data-idx="${i}" onclick="cmdRun(${i})">
-        <span class="cmd-ic ic" style="width:16px;height:16px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/></svg></span>
-        <span class="cmd-lbl">${a.lbl}</span>
-        <span class="cmd-sub">${a.sub}</span>
-      </div>`).join('');
-  }
-  if (matchedTasks.length) {
-    html += `<div class="cmd-section">Tasks</div>`;
-    html += matchedTasks.map((t,i) => {
-      const idx = matchedActions.length + i;
-      return `<div class="cmd-item" data-idx="${idx}" onclick="cmdRun(${idx})">
-        <span class="cmd-ic ic" style="width:16px;height:16px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/></svg></span>
-        <span class="cmd-lbl">${x(t.title)}</span>
-        <span class="cmd-sub">${t.status}${t.due_date?' · '+rt(t.due_date):''}</span>
-      </div>`;
-    }).join('');
-  }
-
-  res.innerHTML = html;
-}
-
-function cmdKey(e) {
-  const items = q('cmd-results').querySelectorAll('.cmd-item');
-  if (e.key === 'ArrowDown') {
-    e.preventDefault();
-    cmdIdx = Math.min(cmdIdx + 1, items.length - 1);
-    items.forEach((el,i) => el.classList.toggle('active', i === cmdIdx));
-    items[cmdIdx]?.scrollIntoView({ block:'nearest' });
-  } else if (e.key === 'ArrowUp') {
-    e.preventDefault();
-    cmdIdx = Math.max(cmdIdx - 1, 0);
-    items.forEach((el,i) => el.classList.toggle('active', i === cmdIdx));
-    items[cmdIdx]?.scrollIntoView({ block:'nearest' });
-  } else if (e.key === 'Enter') {
-    e.preventDefault();
-    if (cmdIdx >= 0 && cmdItems[cmdIdx]) cmdRun(cmdIdx);
-    else if (cmdItems[0]) cmdRun(0);
-  } else if (e.key === 'Escape') {
-    closeCmd();
-  }
-}
-
-function cmdRun(idx) {
-  closeCmd();
-  setTimeout(() => cmdItems[idx]?.action(), 80);
-}
-
-// ══════════════════════════════════════════════
-// FOCUS MODE
-// ══════════════════════════════════════════════
-let focusMode = false;
-
-function toggleFocus() {
-  focusMode = !focusMode;
-  document.body.classList.toggle('focus-mode', focusMode);
-  showToast(focusMode ? 'Focus mode on' : 'Focus mode off');
-}
-
-// ══════════════════════════════════════════════
-// QUICK CAPTURE  (Q key)
-// ══════════════════════════════════════════════
-function openQuickCapture() {
-  const qc = q('quick-capture');
-  qc.classList.add('on');
-  q('qc-input').value = '';
-  q('qc-input').focus();
-}
-
-function closeQuickCapture() {
-  q('quick-capture').classList.remove('on');
-}
-
-async function qcKey(e) {
-  if (e.key === 'Escape') { closeQuickCapture(); return; }
-  if (e.key !== 'Enter') return;
-  const title = q('qc-input').value.trim();
-  if (!title) return;
-
-  q('qc-input').value = '';
-  closeQuickCapture();
-
-  if (!USER) return;
-  const { data, error } = await sb.from('tasks')
-    .insert({ user_id: USER.id, title, status:'todo', priority:'medium' })
-    .select('id').single();
-
-  if (error) { showToast('Quick capture failed','err'); return; }
-  tasks = await loadTasks();
-  renderTasks(); updateCounts(); renderSidebar();
-  showToast('"' + title + '" captured');
-}
-
-// ══════════════════════════════════════════════
-// GLOBAL KEYBOARD SHORTCUTS
-// ══════════════════════════════════════════════
-document.addEventListener('keydown', e => {
-  const tag = document.activeElement.tagName.toLowerCase();
-  const typing = tag === 'input' || tag === 'textarea' || tag === 'select';
-
-  // Cmd/Ctrl + K → command palette
-  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-    e.preventDefault();
-    if (q('cmd-overlay').classList.contains('on')) closeCmd();
-    else openCmd();
-    return;
-  }
-
-  // Escape closes everything
-  if (e.key === 'Escape') {
-    closeModal(); closeCmd(); closeQuickCapture();
-    return;
-  }
-
-  if (typing) return; // don't fire shortcuts while typing
-
-  // C → new task
-  if (e.key === 'c' || e.key === 'C') openModal(null);
-
-  // Q → quick capture
-  if (e.key === 'q' || e.key === 'Q') openQuickCapture();
-
-  // F → focus mode
-  if (e.key === 'f' || e.key === 'F') toggleFocus();
-
-  // ? → open command palette
-  if (e.key === '?') openCmd();
-
-  // 1-5 → navigate views
-  if (e.key === '1') nav('all');
-  if (e.key === '2') nav('today');
-  if (e.key === '3') nav('upcoming');
-  if (e.key === '4') nav('overdue');
-  if (e.key === '5') nav('analytics');
-});
-
-// ── Patch renderTasks to apply custom sort ────────────────────
-// Sort mode logic below:
-function applySortMode(list) {
-  const pinned_list  = list.filter(t => t.pinned);
-  const unpinned = list.filter(t => !t.pinned);
-
-  function sortFn(a, b) {
-    const priOrder = { high:0, medium:1, low:2 };
-    if (sortMode === 'priority') return (priOrder[a.priority]||1) - (priOrder[b.priority]||1);
-    if (sortMode === 'due') {
-      if (!a.due_date && !b.due_date) return 0;
-      if (!a.due_date) return 1;
-      if (!b.due_date) return -1;
-      return new Date(a.due_date) - new Date(b.due_date);
-    }
-    if (sortMode === 'alpha') return (a.title||'').localeCompare(b.title||'');
-    if (sortMode === 'created') return new Date(b.created_at||0) - new Date(a.created_at||0);
-    return 0;
-  }
-
-  return [...pinned_list.sort(sortFn), ...unpinned.sort(sortFn)];
-}
-
-
-// ══════════════════════════════════════════════
-// SUBTASK EXPAND/COLLAPSE ON CARD
-// ══════════════════════════════════════════════
-const expandedSubs = new Set();
-
-function toggleSubsExpand(taskId) {
-  // Subtasks are rendered inline and always visible
-  // This handler intentionally left as no-op
-}
-
-// ══════════════════════════════════════════════
-// TAG MANAGER
-// ══════════════════════════════════════════════
-function openTagManager() {
-  renderTagManagerList();
-  q('tag-overlay').classList.add('on');
-  setTimeout(() => q('new-tag-name').focus(), 80);
-}
-
-function closeTagManager() {
-  q('tag-overlay').classList.remove('on');
-}
-
-function renderTagManagerList() {
-  const container = q('tag-list-modal');
-  if (!tags.length) {
-    container.innerHTML = `<div style="text-align:center;padding:24px;color:var(--text3);font-size:13px">No tags yet — create your first one above</div>`;
-    return;
-  }
-  container.innerHTML = tags.map(tag => {
-    const taskCount = tasks.filter(t => (t.task_tags||[]).some(tt=>tt.tag?.id===tag.id)).length;
-    return `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);transition:border-color .15s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
-      <span style="width:14px;height:14px;border-radius:50%;background:${tag.color};flex-shrink:0"></span>
-      <input class="inp" value="${x(tag.name)}" id="tag-nm-${tag.id}"
-        style="flex:1;height:28px;font-size:13px;font-weight:500;border:none;background:transparent;padding:0;outline:none"
-        onblur="updateTagName('${tag.id}', this.value)"
-        onkeydown="if(event.key==='Enter')this.blur()"/>
-      <input type="color" value="${tag.color}" id="tag-cl-${tag.id}"
-        style="width:28px;height:28px;padding:1px;border:1px solid var(--border);border-radius:5px;cursor:pointer;background:var(--bg)"
-        onchange="updateTagColor('${tag.id}', this.value)"/>
-      <span style="font-size:11px;color:var(--text3);white-space:nowrap">${taskCount} task${taskCount!==1?'s':''}</span>
-      <button class="icon-btn" onclick="deleteTag('${tag.id}')" style="flex-shrink:0;color:var(--text3)" title="Delete tag"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>
-    </div>`;
-  }).join('');
-}
-
-async function createTag() {
-  const name  = q('new-tag-name').value.trim();
-  const color = q('new-tag-color').value;
-  if (!name) { q('new-tag-name').style.borderColor='var(--red)'; q('new-tag-name').focus(); return; }
-  q('new-tag-name').style.borderColor='';
-
-  const { data, error } = await sb.from('tags')
-    .insert({ user_id: USER.id, name, color })
-    .select().single();
-
-  if (error) { showToast('Failed: ' + error.message, 'err'); return; }
-
-  tags.push(data);
-  q('new-tag-name').value = '';
-  renderTagManagerList();
-  renderSidebar();
-  showToast('Tag "' + name + '" created');
-}
-
-async function updateTagName(id, name) {
-  name = name.trim();
-  if (!name) return;
-  const { error } = await sb.from('tags').update({ name }).eq('id', id).eq('user_id', USER.id);
-  if (error) { showToast('Update failed', 'err'); return; }
-  tags = tags.map(t => t.id===id ? {...t, name} : t);
-  renderSidebar();
-}
-
-async function updateTagColor(id, color) {
-  const { error } = await sb.from('tags').update({ color }).eq('id', id).eq('user_id', USER.id);
-  if (error) { showToast('Update failed', 'err'); return; }
-  tags = tags.map(t => t.id===id ? {...t, color} : t);
-  tasks = await loadTasks(); // reload to update tag colors on cards
-  renderTasks(); renderSidebar();
-}
-
-async function deleteTag(id) {
-  const tag = tags.find(t=>t.id===id);
-  if (!confirm(`Delete tag "${tag?.name}"? It will be removed from all tasks.`)) return;
-  const { error } = await sb.from('tags').delete().eq('id', id).eq('user_id', USER.id);
-  if (error) { showToast('Delete failed', 'err'); return; }
-  tags = tags.filter(t => t.id !== id);
-  tasks = await loadTasks();
-  renderTagManagerList();
-  renderSidebar();
-  renderTasks();
-  showToast('Tag deleted');
-}
-
-// ══════════════════════════════════════════════
-// SUBTASK INLINE TOGGLE (on task card)
-// ══════════════════════════════════════════════
-async function toggleSubtask(taskId, subtaskId, current) {
-  const done = !current;
-  // Optimistic update
-  tasks = tasks.map(t => {
-    if (t.id !== taskId) return t;
-    return { ...t, subtasks: (t.subtasks||[]).map(s => s.id===subtaskId ? {...s, completed:done} : s) };
-  });
-  renderTasks();
-  await sb.from('subtasks').update({ completed: done }).eq('id', subtaskId);
-}
-
-// ── GO ───────────────────────────────────────
-boot().catch(e=>{ console.error(e); showToast('Boot failed — check console','err'); });
-
-// ── Init Lucide icons ─────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-});
+boot().catch(e=>{ console.error(e); showToast('Boot failed','err'); });
 </script>
 </body>
 </html>
